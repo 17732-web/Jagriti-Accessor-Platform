@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Jagriti Udyami Scorecard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --orange: #E65100;
+    --orange-light: #FFF3E0;
+    --orange-dark: #BF360C;
+    --orange-border: #FFB74D;
+    --green: #2E7D32;
+    --green-light: #E8F5E9;
+    --green-border: #81C784;
+    --blue: #1565C0;
+    --blue-light: #E3F2FD;
+    --blue-border: #64B5F6;
+    --red: #C62828;
+    --red-light: #FFEBEE;
+    --red-border: #EF9A9A;
+    --amber: #E65100;
+    --amber-light: #FFF8E1;
+    --amber-border: #FFD54F;
+    --bg: #F5F5F0;
+    --card: #FFFFFF;
+    --border: rgba(0,0,0,0.09);
+    --border-strong: rgba(0,0,0,0.16);
+    --text: #1A1A1A;
+    --text-2: #555;
+    --text-3: #999;
+    --radius: 10px;
+    --radius-lg: 14px;
+    --font: 'DM Sans', sans-serif;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  /* ---- TOPBAR ---- */
+  .topbar {
+    background: var(--card);
+    border-bottom: 0.5px solid var(--border);
+    padding: 0 20px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 1px 0 var(--border);
+  }
+  .topbar-left { display: flex; align-items: center; gap: 10px; }
+  .topbar-brand { font-size: 15px; font-weight: 600; color: var(--text); }
+  .topbar-sub { font-size: 12px; color: var(--text-2); }
+  .score-badge {
+    background: var(--orange-light);
+    color: var(--orange);
+    border: 0.5px solid var(--orange-border);
+    border-radius: var(--radius);
+    padding: 5px 13px;
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  .progress-bar { height: 3px; background: #eee; display: flex; }
+  .progress-seg { height: 100%; transition: background 0.3s; flex: 1; }
+  .progress-seg.filled { background: var(--orange); }
+  .progress-seg.active { background: var(--orange-border); }
+
+  /* ---- MAIN ---- */
+  .main { max-width: 680px; margin: 0 auto; padding: 24px 16px 100px; width: 100%; }
+
+  /* ---- CARDS ---- */
+  .card {
+    background: var(--card);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    margin-bottom: 16px;
+  }
+
+  .section-header { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 20px; }
+  .section-icon {
+    width: 42px; height: 42px; min-width: 42px;
+    background: var(--orange-light);
+    border-radius: var(--radius);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--orange);
+    font-size: 20px;
+  }
+  .section-title { font-size: 17px; font-weight: 600; color: var(--text); line-height: 1.3; }
+  .section-meta { font-size: 12px; color: var(--text-2); margin-top: 2px; }
+
+  /* ---- FORM FIELDS ---- */
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .form-group { display: flex; flex-direction: column; gap: 5px; }
+  .form-group.full { grid-column: 1 / -1; }
+  .form-label { font-size: 12px; font-weight: 500; color: var(--text-2); text-transform: uppercase; letter-spacing: 0.04em; }
+  .form-label .req { color: var(--orange); }
+  .form-input {
+    border: 0.5px solid var(--border-strong);
+    border-radius: var(--radius);
+    padding: 10px 13px;
+    font-size: 14px;
+    background: #FAFAF8;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    font-family: var(--font);
+    width: 100%;
+  }
+  .form-input:focus { border-color: var(--orange); box-shadow: 0 0 0 3px rgba(230,81,0,0.1); }
+  textarea.form-input { resize: vertical; min-height: 80px; }
+
+  /* ---- CRITERION ---- */
+  .criterion-card {
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 16px;
+    margin-bottom: 12px;
+    transition: border-color 0.2s;
+  }
+  .criterion-card.answered { border-color: var(--green-border); background: #FAFFFE; }
+  .criterion-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+  }
+  .must-badge {
+    background: var(--amber-light);
+    color: #F57F17;
+    border: 0.5px solid var(--amber-border);
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+  }
+
+  .options-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+  .option-btn {
+    border: 0.5px solid var(--border-strong);
+    border-radius: var(--radius);
+    padding: 8px 5px;
+    font-size: 11px;
+    text-align: center;
+    cursor: pointer;
+    background: var(--card);
+    color: var(--text-2);
+    transition: all 0.15s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    line-height: 1.3;
+    font-family: var(--font);
+  }
+  .option-btn:hover { border-color: var(--orange); color: var(--text); background: var(--orange-light); }
+  .option-score-lbl { font-size: 10px; font-weight: 700; }
+  .option-text { font-size: 10px; }
+
+  .sel-1 { background: #FFEBEE !important; border-color: #EF9A9A !important; color: #C62828 !important; }
+  .sel-2 { background: #FFF3E0 !important; border-color: #FFCC80 !important; color: #BF360C !important; }
+  .sel-3 { background: #FFFDE7 !important; border-color: #FFE57F !important; color: #827717 !important; }
+  .sel-4 { background: #F1F8E9 !important; border-color: #AED581 !important; color: #33691E !important; }
+  .sel-5 { background: #E8F5E9 !important; border-color: #81C784 !important; color: #1B5E20 !important; }
+
+  /* ---- BOTTOM NAV ---- */
+  .bottombar {
+    background: var(--card);
+    border-top: 0.5px solid var(--border);
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    z-index: 100;
+  }
+  .step-counter { font-size: 12px; color: var(--text-2); }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 9px 18px;
+    border-radius: var(--radius);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 0.5px solid var(--border-strong);
+    background: var(--card);
+    color: var(--text);
+    transition: all 0.15s;
+    font-family: var(--font);
+    text-decoration: none;
+  }
+  .btn:hover { background: #F0EDE8; }
+  .btn:disabled { opacity: 0.35; cursor: not-allowed; }
+  .btn-primary { background: var(--orange); border-color: var(--orange); color: #fff; }
+  .btn-primary:hover { background: var(--orange-dark); border-color: var(--orange-dark); }
+  .btn-success { background: var(--green); border-color: var(--green); color: #fff; }
+  .btn-success:hover { background: #1B5E20; }
+  .btn-danger { background: #fff; border-color: #EF9A9A; color: var(--red); }
+  .btn-danger:hover { background: var(--red-light); }
+
+  .btn-row { display: flex; gap: 8px; flex-wrap: wrap; }
+
+  /* ---- DASHBOARD ---- */
+  .dash-header {
+    background: var(--card);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 20px 24px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .dash-title { font-size: 17px; font-weight: 600; }
+  .dash-meta { font-size: 12px; color: var(--text-2); margin-top: 2px; }
+
+  .assessments-table {
+    background: var(--card);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  thead tr { background: #FAFAF8; }
+  th { padding: 10px 16px; text-align: left; font-weight: 600; color: var(--text-2); font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 0.5px solid var(--border); }
+  td { padding: 13px 16px; border-bottom: 0.5px solid var(--border); vertical-align: middle; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #FAFAF8; }
+
+  .status-pill {
+    display: inline-block;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border: 0.5px solid;
+  }
+  .s-high { background: var(--green-light); border-color: var(--green-border); color: var(--green); }
+  .s-good { background: var(--blue-light); border-color: var(--blue-border); color: var(--blue); }
+  .s-needs { background: var(--orange-light); border-color: var(--orange-border); color: var(--orange); }
+  .s-critical { background: var(--red-light); border-color: var(--red-border); color: var(--red); }
+
+  /* ---- LOGIN ---- */
+  .login-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 16px;
+    background: var(--bg);
+  }
+  .login-card {
+    background: var(--card);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 36px 32px;
+    width: 100%;
+    max-width: 380px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+  }
+  .login-logo-icon {
+    width: 60px; height: 60px;
+    background: var(--orange-light);
+    border-radius: var(--radius-lg);
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 16px;
+    font-size: 30px;
+    color: var(--orange);
+  }
+  .login-title { font-size: 20px; font-weight: 600; text-align: center; margin-bottom: 6px; }
+  .login-sub { font-size: 13px; color: var(--text-2); text-align: center; margin-bottom: 28px; line-height: 1.6; }
+  .err-msg { color: var(--red); font-size: 12px; margin-top: 8px; display: none; }
+
+  /* ---- RESULTS ---- */
+  .results-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 18px; }
+  .result-metric {
+    background: #FAFAF8;
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+  }
+  .result-metric-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-2); margin-bottom: 4px; }
+  .result-metric-val { font-size: 26px; font-weight: 600; color: var(--text); }
+
+  .section-result-row { display: flex; align-items: center; padding: 9px 0; border-bottom: 0.5px solid var(--border); }
+  .section-result-row:last-child { border-bottom: none; }
+  .mini-bar-bg { height: 6px; background: #eee; border-radius: 3px; flex: 1; margin: 0 12px; }
+  .mini-bar-fill { height: 6px; border-radius: 3px; background: var(--orange); }
+  .section-result-name { font-size: 13px; min-width: 190px; color: var(--text-2); }
+  .section-result-score { font-size: 13px; font-weight: 600; min-width: 55px; text-align: right; }
+
+  /* ---- VIEWS ---- */
+  .view { display: none; }
+  .view.active { display: block; }
+  #login-view.active { display: flex; flex-direction: column; min-height: 100vh; }
+
+  /* ---- MOBILE ---- */
+  @media (max-width: 480px) {
+    .form-grid { grid-template-columns: 1fr; }
+    .options-grid { grid-template-columns: repeat(5, 1fr); }
+    .option-btn { padding: 6px 3px; }
+    .option-text { display: none; }
+    .dash-header { flex-direction: column; align-items: flex-start; }
+    .results-grid { grid-template-columns: 1fr; }
+    .section-result-name { min-width: 120px; font-size: 12px; }
+    table { font-size: 12px; }
+    th, td { padding: 10px 10px; }
+  }
+
+  /* ---- PRINT ---- */
+  @media print {
+    .topbar, .bottombar, .btn-row { display: none !important; }
+    .main { padding-bottom: 20px; }
+    .card { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<!-- LOGIN VIEW -->
+<div id="login-view" class="view active">
+  <div class="login-page">
+    <div class="login-card">
+      <div class="login-logo-icon"><i class="ti ti-building-community"></i></div>
+      <div class="login-title">Jagriti Assessor Portal</div>
+      <div class="login-sub">Enter your official email to access the Udyami Scorecard system</div>
+      <div class="form-group" style="margin-bottom:14px;">
+        <label class="form-label">Official email ID <span class="req">*</span></label>
+        <input class="form-input" id="email-input" type="email" placeholder="name@jagriti.org" />
+      </div>
+      <button class="btn btn-primary" id="login-btn" style="width:100%;justify-content:center;">
+        Access dashboard <i class="ti ti-arrow-right"></i>
+      </button>
+      <div class="err-msg" id="login-err">Please enter a valid email address.</div>
+    </div>
+  </div>
+</div>
+
+<!-- DASHBOARD VIEW -->
+<div id="dashboard-view" class="view">
+  <div class="topbar">
+    <div class="topbar-left">
+      <i class="ti ti-clipboard-list" style="font-size:20px;color:var(--orange);"></i>
+      <div>
+        <div class="topbar-brand">Master Assessment Dashboard</div>
+        <div class="topbar-sub" id="dash-user-label"></div>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn" id="export-btn" disabled><i class="ti ti-download"></i> Export CSV</button>
+      <button class="btn btn-primary" id="new-btn"><i class="ti ti-plus"></i> New assessment</button>
+      <button class="btn btn-danger" id="logout-btn"><i class="ti ti-logout"></i> Exit</button>
+    </div>
+  </div>
+  <div class="main" id="dash-main"></div>
+</div>
+
+<!-- FORM VIEW -->
+<div id="form-view" class="view">
+  <div class="topbar">
+    <button class="btn" id="cancel-btn" style="padding:7px 14px;"><i class="ti ti-arrow-left"></i> Cancel</button>
+    <div id="form-name-label" style="font-size:13px;color:var(--text-2);"></div>
+    <div class="score-badge" id="live-score">Score: 0 / 160</div>
+  </div>
+  <div class="progress-bar" id="progress-bar"></div>
+  <div class="main" id="form-main"></div>
+  <div class="bottombar">
+    <button class="btn" id="back-btn" disabled><i class="ti ti-arrow-left"></i> Back</button>
+    <div class="step-counter" id="step-counter"></div>
+    <button class="btn btn-primary" id="next-btn">Next <i class="ti ti-arrow-right"></i></button>
+  </div>
+</div>
+
+<!-- RESULT VIEW -->
+<div id="result-view" class="view">
+  <div class="topbar">
+    <button class="btn" id="result-back-btn" style="padding:7px 14px;"><i class="ti ti-arrow-left"></i> Edit</button>
+    <div style="font-size:15px;font-weight:600;">Assessment results</div>
+    <button class="btn btn-success" id="save-btn"><i class="ti ti-device-floppy"></i> Save to dashboard</button>
+  </div>
+  <div class="main" id="result-main"></div>
+</div>
+
+<script>
+const SECTIONS = [
+  { id:'s1', title:'Business capacity', icon:'ti-building', maxScore:15, criteria:[
+    { id:'c1', name:'Infrastructure & workspace', weight:1, options:['No space/equipment','Home-based, minimal tools','Rented, basic setup','Adequate owned/rented','Well-equipped premises'] },
+    { id:'c2', name:'Core team strength', weight:1, options:['Solo founder','1 part-time helper','2–3 with roles','4–6 stable team','7+ clear hierarchy'] },
+    { id:'c3', name:'Technology adoption', weight:1, options:['No digital tools','WhatsApp only','Spreadsheets/free apps','Multiple tools','Integrated stack'] },
+  ]},
+  { id:'s2', title:'Employment generated', icon:'ti-users', maxScore:20, criteria:[
+    { id:'c4', name:'Direct employees', weight:2, isMustHave:true, options:['Only founder','1–2 casual','3–5 employees','6–15 employees','16+ growing'] },
+    { id:'c5', name:'Indirect livelihoods', weight:1, options:['None','1–2 helpers','3–5 earners','6–15 earners','15+ supported'] },
+    { id:'c6', name:'Wage quality', weight:1, options:['Irregular/below min','Min wage delayed','Min wage on time','Above min + benefits','Fair wage + increments'] },
+  ]},
+  { id:'s3', title:'Revenue & financial health', icon:'ti-cash', maxScore:45, criteria:[
+    { id:'c7', name:'Revenue stage', weight:2, isMustHave:true, options:['No revenue','Revenue, heavy loss','Break-even','Small consistent profit','Strong growing profit'] },
+    { id:'c8', name:'Revenue growth trend', weight:1, options:['Declining','Flat/no direction','1–10% growth','10–30% growth','>30% momentum'] },
+    { id:'c9', name:'Gross margin health', weight:1, options:['Unaware of margins','Knows it\'s low','~10–20% margin','~20–40% margin','>40% margin'] },
+    { id:'c10', name:'Financial record-keeping', weight:2, isMustHave:true, options:['No records','Cash register only','Informal digital','GST + basic accounts','Full books, CA-reviewed'] },
+    { id:'c11', name:'Funding & credit access', weight:1, options:['None, not applied','Applied, rejected','Informal loan','Formal loan/scheme','Multiple funding sources'] },
+    { id:'c12', name:'Cash flow management', weight:2, isMustHave:true, options:['Always cash-short','Frequent shortfalls, no tracking','Informal tracking, occasional gaps','Regular statement, 1–2 months runway','Forecast maintained, 3+ months runway'] },
+  ]},
+  { id:'s4', title:'Product / service offering', icon:'ti-package', maxScore:20, criteria:[
+    { id:'c13', name:'Value proposition clarity', weight:1, options:['Cannot articulate','Vague answer','Knows problem, fuzzy','Clear problem + solution','Sharp, customer-tested'] },
+    { id:'c14', name:'Quality consistency', weight:1, options:['No QC, complaints','Informal QC','Basic checks','Documented QC','Certified, near-zero defects'] },
+    { id:'c15', name:'Customer base & retention', weight:2, isMustHave:true, options:['0–2 one-time buyers','3–10 low repeat','10–50 moderate','50–200 strong loyalty','200+ NPS tracked'] },
+  ]},
+  { id:'s5', title:'Resources & support needed', icon:'ti-lifebuoy', maxScore:20, criteria:[
+    { id:'c16', name:'Mentorship & guidance', weight:1, options:['No mentor','Occasional talk','1–2 irregular','Regular tangible impact','Strong mentor network'] },
+    { id:'c17', name:'Network & linkages', weight:1, options:['Not used','Aware, not engaged','Some connections','Regular engagement','Multiple business outcomes'] },
+    { id:'c18', name:'Skill gap (reverse scored)', weight:1, options:['Critical gaps','3–4 significant','2–3 moderate','1–2 minor gaps','No gaps, upskilling on'] },
+    { id:'c19', name:'Resource gap (reverse scored)', weight:1, options:['Severe constraint','3+ resources needed','2 needed','1 manageable gap','Well-resourced'] },
+  ]},
+  { id:'s6', title:'Compliance & legal standing', icon:'ti-certificate', maxScore:25, criteria:[
+    { id:'c20', name:'Business registration', weight:2, isMustHave:true, options:['No registration','1 basic only','2–3 registrations','4+ registrations','Fully compliant'] },
+    { id:'c21', name:'Tax compliance', weight:1, options:['No filings, notices','Filing irregularly','Filing but delayed','On time, no notices','Proactive, CA-managed'] },
+    { id:'c22', name:'Labour law compliance', weight:1, options:['No compliance','Aware, not compliant','Partial (1–2 rules)','PF/ESI + salary slips','Full HR compliance'] },
+    { id:'c23', name:'IP / brand protection', weight:1, options:['No IP awareness','Aware, no action','Applied, pending','1 registration active','Multiple IP assets'] },
+  ]},
+  { id:'s7', title:'Growth mindset & innovation', icon:'ti-bulb', maxScore:15, criteria:[
+    { id:'c24', name:'Vision & goal clarity', weight:1, options:['No vision','Vague aspirations','1-year informal','3-year with milestones','5-year written, reviewed'] },
+    { id:'c25', name:'Social / environmental impact', weight:1, options:['No awareness','Unmeasured','Informal stories','Some data collected','Documented, SDG-linked'] },
+    { id:'c26', name:'Collaboration & partnerships', weight:1, options:['No partnerships','1 informal tie-up','1–2 active','3+ with outcomes','MoUs, co-ventures'] },
+  ]},
+];
+
+const SCORE_LABELS = ['1 – Poor','2 – Weak','3 – Fair','4 – Good','5 – Strong'];
+const SEL_CLASSES = ['sel-1','sel-2','sel-3','sel-4','sel-5'];
+
+let assessorEmail = '';
+let assessments = [];
+let step = 0;
+let draft = makeEmptyDraft();
+
+function makeEmptyDraft() {
+  return {
+    basic: {
+      udyamiName:'', mobile:'', cohort:'', district:'', block:'',
+      businessName:'', businessType:'', runningSince:'',
+      assessmentDate: new Date().toISOString().split('T')[0],
+      assessorNotes:''
+    },
+    scores: {}
+  };
+}
+
+function totalScore() {
+  return SECTIONS.reduce((t, s) => t + s.criteria.reduce((a, c) => a + (draft.scores[c.id]||0)*c.weight, 0), 0);
+}
+
+function sectionScore(sec) {
+  return sec.criteria.reduce((a, c) => a + (draft.scores[c.id]||0)*c.weight, 0);
+}
+
+function getStatus(pct) {
+  if (pct >= 80) return { label:'High performer', cls:'s-high' };
+  if (pct >= 60) return { label:'On track', cls:'s-good' };
+  if (pct >= 40) return { label:'Needs support', cls:'s-needs' };
+  return { label:'Critical support needed', cls:'s-critical' };
+}
+
+function showView(id) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById(id+'-view').classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+// ---- LOGIN ----
+document.getElementById('login-btn').onclick = doLogin;
+document.getElementById('email-input').onkeydown = e => { if (e.key === 'Enter') doLogin(); };
+
+function doLogin() {
+  const val = document.getElementById('email-input').value.trim();
+  const err = document.getElementById('login-err');
+  if (!val || !val.includes('@') || !val.includes('.')) {
+    err.style.display = '';
+    return;
+  }
+  err.style.display = 'none';
+  assessorEmail = val;
+  showView('dashboard');
+  renderDashboard();
+}
+
+// ---- LOGOUT ----
+document.getElementById('logout-btn').onclick = () => {
+  if (!confirm('Exit the portal?')) return;
+  assessorEmail = '';
+  document.getElementById('email-input').value = '';
+  showView('login');
+};
+
+// ---- DASHBOARD ----
+document.getElementById('new-btn').onclick = startNew;
+document.getElementById('export-btn').onclick = exportCSV;
+
+function renderDashboard() {
+  document.getElementById('dash-user-label').textContent = assessorEmail;
+  document.getElementById('export-btn').disabled = assessments.length === 0;
+
+  const el = document.getElementById('dash-main');
+  if (!assessments.length) {
+    el.innerHTML = `
+      <div class="assessments-table" style="text-align:center;padding:56px 24px;">
+        <div style="font-size:48px;color:#ccc;margin-bottom:14px;"><i class="ti ti-clipboard-list"></i></div>
+        <div style="font-size:16px;font-weight:600;margin-bottom:6px;">No assessments yet</div>
+        <div style="font-size:13px;color:var(--text-2);margin-bottom:22px;">Start your first Udyami assessment to see results here.</div>
+        <button class="btn btn-primary" onclick="startNew()"><i class="ti ti-plus"></i> Start first assessment</button>
+      </div>`;
+    return;
+  }
+
+  el.innerHTML = `
+    <div class="dash-header">
+      <div>
+        <div class="dash-title">${assessments.length} assessment${assessments.length>1?'s':''} recorded</div>
+        <div class="dash-meta">Logged in as ${assessorEmail}</div>
+      </div>
+    </div>
+    <div class="assessments-table">
+      <table>
+        <thead><tr>
+          <th>Udyami &amp; Business</th>
+          <th>District</th>
+          <th>Date</th>
+          <th>Score</th>
+          <th>Status</th>
+        </tr></thead>
+        <tbody>
+          ${assessments.map(a => {
+            const st = getStatus(a.pct);
+            return `<tr>
+              <td>
+                <div style="font-weight:600;">${a.udyamiName||'—'}</div>
+                <div style="font-size:12px;color:var(--text-2);">${a.businessName||'—'}</div>
+              </td>
+              <td style="color:var(--text-2);">${a.district||'—'}</td>
+              <td style="color:var(--text-2);">${a.date}</td>
+              <td>
+                <span style="font-weight:700;">${a.total}</span>
+                <span style="color:var(--text-2);">/160</span>
+                <span style="font-size:11px;color:var(--text-2);"> (${a.pct}%)</span>
+              </td>
+              <td><span class="status-pill ${st.cls}">${st.label}</span></td>
+            </tr>`;
+          }).join('')}
+        </tbody>
+      </table>
+    </div>`;
+}
+
+// ---- NEW ASSESSMENT ----
+function startNew() {
+  draft = makeEmptyDraft();
+  step = 0;
+  showView('form');
+  renderFormStep();
+}
+
+// ---- FORM STEPS ----
+document.getElementById('cancel-btn').onclick = () => {
+  if (confirm('Unsaved progress will be lost. Cancel?')) {
+    showView('dashboard');
+    renderDashboard();
+  }
+};
+
+document.getElementById('back-btn').onclick = () => {
+  if (step > 0) { step--; renderFormStep(); }
+};
+
+document.getElementById('next-btn').onclick = () => {
+  if (step === 0) {
+    if (!draft.basic.udyamiName.trim()) { alert('Please enter the Udyami name.'); return; }
+    if (!draft.basic.businessName.trim()) { alert('Please enter the business name.'); return; }
+  }
+  const total = SECTIONS.length + 1;
+  if (step < total - 1) {
+    step++;
+    renderFormStep();
+  } else {
+    showView('result');
+    renderResults();
+  }
+};
+
+function renderFormStep() {
+  const total = SECTIONS.length + 1;
+  document.getElementById('form-name-label').textContent =
+    draft.basic.udyamiName ? `Evaluating: ${draft.basic.udyamiName}` : 'New assessment';
+  document.getElementById('live-score').textContent = `Score: ${totalScore()} / 160`;
+
+  const pb = document.getElementById('progress-bar');
+  pb.innerHTML = Array.from({length:total}, (_,i) =>
+    `<div class="progress-seg ${i < step ? 'filled' : i === step ? 'active' : ''}"></div>`
+  ).join('');
+
+  document.getElementById('back-btn').disabled = step === 0;
+  document.getElementById('step-counter').textContent =
+    step === 0 ? 'Step 1 of 8 — Basic info' : `Step ${step+1} of 8 — ${SECTIONS[step-1].title}`;
+
+  const nb = document.getElementById('next-btn');
+  if (step === total - 1) {
+    nb.innerHTML = '<i class="ti ti-chart-bar"></i> View results';
+    nb.className = 'btn btn-success';
+  } else {
+    nb.innerHTML = 'Next <i class="ti ti-arrow-right"></i>';
+    nb.className = 'btn btn-primary';
+  }
+
+  step === 0 ? renderBasicStep() : renderSectionStep(step - 1);
+  window.scrollTo(0, 0);
+}
+
+function renderBasicStep() {
+  const b = draft.basic;
+  document.getElementById('form-main').innerHTML = `
+    <div class="card">
+      <div class="section-header">
+        <div class="section-icon"><i class="ti ti-user"></i></div>
+        <div>
+          <div class="section-title">Udyami details</div>
+          <div class="section-meta">Assessor: ${assessorEmail}</div>
+        </div>
+      </div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label">Udyami name <span class="req">*</span></label>
+          <input class="form-input" id="f-udyamiName" type="text" placeholder="Full name" value="${esc(b.udyamiName)}" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Mobile number</label>
+          <input class="form-input" id="f-mobile" type="tel" placeholder="10-digit number" value="${esc(b.mobile)}" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Business name <span class="req">*</span></label>
+          <input class="form-input" id="f-businessName" type="text" placeholder="Business or brand name" value="${esc(b.businessName)}" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Business type / sector</label>
+          <input class="form-input" id="f-businessType" type="text" placeholder="e.g. Tailoring, Food processing" value="${esc(b.businessType)}" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Cohort / batch</label>
+          <input class="form-input" id="f-cohort" type="text" placeholder="e.g. Cohort 7" value="${esc(b.cohort)}" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">District</label>
+          <input class="form-input" id="f-district" type="text" placeholder="District name" value="${esc(b.district)}" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Block / village</label>
+          <input class="form-input" id="f-block" type="text" placeholder="Block or village" value="${esc(b.block)}" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Running since</label>
+          <input class="form-input" id="f-runningSince" type="text" placeholder="e.g. March 2021" value="${esc(b.runningSince)}" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Assessment date</label>
+          <input class="form-input" id="f-assessmentDate" type="date" value="${esc(b.assessmentDate)}" />
+        </div>
+        <div class="form-group full">
+          <label class="form-label">Assessor notes</label>
+          <textarea class="form-input" id="f-assessorNotes" rows="3" placeholder="Any additional observations...">${esc(b.assessorNotes)}</textarea>
+        </div>
+      </div>
+    </div>`;
+
+  ['udyamiName','mobile','businessName','businessType','cohort','district','block','runningSince','assessmentDate','assessorNotes'].forEach(f => {
+    const el = document.getElementById('f-'+f);
+    if (!el) return;
+    el.addEventListener('input', () => {
+      draft.basic[f] = el.value;
+      if (f === 'udyamiName') document.getElementById('form-name-label').textContent =
+        el.value ? `Evaluating: ${el.value}` : 'New assessment';
+    });
+  });
+}
+
+function renderSectionStep(si) {
+  const sec = SECTIONS[si];
+  const answered = sec.criteria.filter(c => draft.scores[c.id]).length;
+  document.getElementById('form-main').innerHTML = `
+    <div class="card">
+      <div class="section-header">
+        <div class="section-icon"><i class="ti ${sec.icon}"></i></div>
+        <div>
+          <div class="section-title">${sec.title}</div>
+          <div class="section-meta">${answered} / ${sec.criteria.length} answered &nbsp;·&nbsp; Max: ${sec.maxScore} pts</div>
+        </div>
+      </div>
+      ${sec.criteria.map((c, ci) => `
+        <div class="criterion-card ${draft.scores[c.id] ? 'answered' : ''}" id="cc-${c.id}">
+          <div class="criterion-title">
+            ${ci+1}. ${c.name}
+            ${c.isMustHave ? '<span class="must-badge">★ 2× weight</span>' : ''}
+          </div>
+          <div class="options-grid">
+            ${c.options.map((opt, oi) => {
+              const sel = draft.scores[c.id] === oi+1 ? SEL_CLASSES[oi] : '';
+              return `<button class="option-btn ${sel}" onclick="pick('${c.id}',${oi+1},${si})">
+                <span class="option-score-lbl">${SCORE_LABELS[oi]}</span>
+                <span class="option-text">${opt}</span>
+              </button>`;
+            }).join('')}
+          </div>
+        </div>
+      `).join('')}
+    </div>`;
+}
+
+window.pick = function(critId, val, si) {
+  draft.scores[critId] = val;
+  document.getElementById('live-score').textContent = `Score: ${totalScore()} / 160`;
+
+  const grid = document.querySelector(`#cc-${critId} .options-grid`);
+  if (grid) grid.querySelectorAll('.option-btn').forEach((btn, i) => {
+    btn.className = 'option-btn' + (i === val-1 ? ' '+SEL_CLASSES[i] : '');
+  });
+
+  const cc = document.getElementById('cc-'+critId);
+  if (cc) cc.classList.add('answered');
+
+  const sec = SECTIONS[si];
+  const answered = sec.criteria.filter(c => draft.scores[c.id]).length;
+  const meta = document.querySelector('.section-meta');
+  if (meta) meta.textContent = `${answered} / ${sec.criteria.length} answered · Max: ${sec.maxScore} pts`;
+};
+
+// ---- RESULTS ----
+document.getElementById('result-back-btn').onclick = () => { showView('form'); renderFormStep(); };
+
+document.getElementById('save-btn').onclick = () => {
+  const tot = totalScore();
+  const pct = Math.round((tot/160)*100);
+  assessments.unshift({
+    udyamiName: draft.basic.udyamiName,
+    businessName: draft.basic.businessName,
+    district: draft.basic.district,
+    date: draft.basic.assessmentDate,
+    total: tot, pct,
+    scores: {...draft.scores}
+  });
+  showView('dashboard');
+  renderDashboard();
+};
+
+function renderResults() {
+  const tot = totalScore();
+  const pct = Math.round((tot/160)*100);
+  const st = getStatus(pct);
+  const allAnswered = SECTIONS.every(s => s.criteria.every(c => draft.scores[c.id]));
+
+  document.getElementById('result-main').innerHTML = `
+    <div class="card">
+      <div class="section-header">
+        <div class="section-icon"><i class="ti ti-chart-bar"></i></div>
+        <div>
+          <div class="section-title">${draft.basic.udyamiName || 'Udyami'} — scorecard</div>
+          <div class="section-meta">${draft.basic.businessName || ''} &nbsp;·&nbsp; ${draft.basic.assessmentDate}</div>
+        </div>
+      </div>
+      ${!allAnswered ? `<div style="background:#FFF8E1;border:0.5px solid #FFD54F;border-radius:var(--radius);padding:10px 14px;font-size:13px;color:#F57F17;margin-bottom:16px;">
+        <i class="ti ti-alert-triangle"></i> Some questions were skipped — they count as 0.
+      </div>` : ''}
+      <div class="results-grid">
+        <div class="result-metric">
+          <div class="result-metric-label">Total score</div>
+          <div class="result-metric-val">${tot}<span style="font-size:16px;color:var(--text-2);">/160</span></div>
+        </div>
+        <div class="result-metric">
+          <div class="result-metric-label">Overall %</div>
+          <div class="result-metric-val">${pct}%</div>
+        </div>
+      </div>
+      <div style="margin-bottom:20px;">
+        <span class="status-pill ${st.cls}" style="font-size:13px;padding:5px 16px;">${st.label}</span>
+      </div>
+      <div>
+        ${SECTIONS.map(sec => {
+          const sc = sectionScore(sec);
+          const sp = Math.round((sc/sec.maxScore)*100);
+          return `<div class="section-result-row">
+            <div class="section-result-name">${sec.title}</div>
+            <div class="mini-bar-bg"><div class="mini-bar-fill" style="width:${sp}%"></div></div>
+            <div class="section-result-score">${sc}/${sec.maxScore}</div>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>`;
+}
+
+// ---- CSV EXPORT ----
+function exportCSV() {
+  if (!assessments.length) return;
+  const heads = ['Udyami name','Business name','District','Date','Total score','Percentage','Status',
+    ...SECTIONS.flatMap(s => s.criteria.map(c => `[${s.title}] ${c.name}`))];
+  const rows = assessments.map(a => {
+    const st = getStatus(a.pct);
+    const base = [`"${a.udyamiName}"`,`"${a.businessName}"`,`"${a.district}"`,a.date,a.total,a.pct,st.label];
+    const sc = SECTIONS.flatMap(s => s.criteria.map(c => a.scores[c.id]||0));
+    return [...base,...sc].join(',');
+  });
+  const csv = [heads.join(','),...rows].join('\n');
+  const blob = new Blob([csv], {type:'text/csv'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `Jagriti_Assessments_${new Date().toISOString().split('T')[0]}.csv`;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+}
+
+function esc(s) { return (s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+</script>
+</body>
+</html>
