@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jagriti Udyami Scorecard Assessor</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- React & ReactDOM -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <!-- Babel for JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <style>
+        /* Basic animations */
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideInUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes slideInRight { from { transform: translateX(20px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        
+        .animate-fade-in { animation: fadeIn 0.3s ease-out; }
+        .animate-slide-up { animation: slideInUp 0.4s ease-out; }
+        .animate-slide-right { animation: slideInRight 0.4s ease-out; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans antialiased">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useMemo } = React;
+
+        // --- ICONS COMPONENTS ---
+        // Creating wrapper components for Lucide icons since we are not using a bundler
+        const IconWrapper = ({ name, size = 24, className = "" }) => {
+            const iconRef = React.useRef(null);
+            
+            useEffect(() => {
+                if (iconRef.current) {
+                    lucide.createIcons({
+                        icons: { [name]: lucide.icons[name] },
+                        nameAttr: 'data-lucide',
+                        attrs: {
+                            class: `lucide lucide-${name} ${className}`,
+                            width: size,
+                            height: size,
+                        }
+                    });
+                    // lucide replaces the element, so we need to set the attributes on the new element
+                     const svg = iconRef.current.querySelector('svg');
+                     if(svg) {
+                         svg.setAttribute('width', size);
+                         svg.setAttribute('height', size);
+                         if(className) svg.setAttribute('class', className);
+                     }
+                }
+            }, [name, size, className]);
+
+            return <i ref={iconRef} data-lucide={name}></i>;
+        };
+
+        const ClipboardList = (props) => <IconWrapper name="clipboard-list" {...props} />;
+        const User = (props) => <IconWrapper name="user" {...props} />;
+        const ArrowRight = (props) => <IconWrapper name="arrow-right" {...props} />;
+        const ArrowLeft = (props) => <IconWrapper name="arrow-left" {...props} />;
+        const Save = (props) => <IconWrapper name="save" {...props} />;
+        const Download = (props) => <IconWrapper name="download" {...props} />;
+        const CheckCircle = (props) => <IconWrapper name="check-circle" {...props} />;
+        const Plus = (props) => <IconWrapper name="plus" {...props} />;
+        const BarChart3 = (props) => <IconWrapper name="bar-chart-3" {...props} />;
+        const FileText = (props) => <IconWrapper name="file-text" {...props} />;
+        const LogOut = (props) => <IconWrapper name="log-out" {...props} />;
+        const Building2 = (props) => <IconWrapper name="building-2" {...props} />;
+
+        // --- DATA STRUCTURE: RUBRICS & SECTIONS ---
+        const SCORECARD_SECTIONS = [
+          {
+            id: 's1',
+            title: 'Business Capacity',
+            maxScore: 15,
+            criteria: [
+              { id: 'c1', name: 'Infrastructure & workspace', weight: 1, options: ['No space/equip', 'Home-based, minimal tools', 'Rented, basic setup', 'Adequate owned/rented', 'Well-equipped premises'] },
+              { id: 'c2', name: 'Core team strength', weight: 1, options: ['Solo founder', '1 part-time helper', '2–3 with roles', '4–6 stable team', '7+ clear hierarchy'] },
+              { id: 'c3', name: 'Technology adoption', weight: 1, options: ['No digital tools', 'WhatsApp only', 'Spreadsheets/free apps', 'Multiple tools', 'Integrated stack'] },
+            ]
+          },
+          {
+            id: 's2',
+            title: 'Employment Generated',
+            maxScore: 20,
+            criteria: [
+              { id: 'c4', name: 'Direct employees', weight: 2, isMustHave: true, options: ['Only founder', '1–2 casual', '3–5 employees', '6–15 employees', '16+ growing'] },
+              { id: 'c5', name: 'Indirect livelihoods', weight: 1, options: ['None', '1–2 helpers', '3–5 earners', '6–15 earners', '15+ supported'] },
+              { id: 'c6', name: 'Wage quality', weight: 1, options: ['Irregular/below min', 'Min wage delayed', 'Min wage on time', 'Above min + benefits', 'Fair wage + increments'] },
+            ]
+          },
+          {
+            id: 's3',
+            title: 'Revenue & Financial Health',
+            maxScore: 45,
+            criteria: [
+              { id: 'c7', name: 'Revenue stage', weight: 2, isMustHave: true, options: ['No revenue', 'Revenue, heavy loss', 'Break-even', 'Small consistent profit', 'Strong growing profit'] },
+              { id: 'c8', name: 'Revenue growth trend', weight: 1, options: ['Declining', 'Flat/no direction', '1–10% growth', '10–30% growth', '>30% momentum'] },
+              { id: 'c9', name: 'Gross margin health', weight: 1, options: ['Unaware of margins', 'Knows it\'s low', '~10–20% margin', '~20–40% margin', '>40% margin'] },
+              { id: 'c10', name: 'Financial record-keeping', weight: 2, isMustHave: true, options: ['No records', 'Cash register only', 'Informal digital', 'GST + basic accounts', 'Full books, CA-reviewed'] },
+              { id: 'c11', name: 'Funding & credit access', weight: 1, options: ['None, not applied', 'Applied, rejected', 'Informal loan', 'Formal loan/scheme', 'Multiple funding sources'] },
+              { id: 'c12', name: 'Cash flow management', weight: 2, isMustHave: true, options: ['Always cash-short, can\'t pay bills', 'Frequent shortfalls, no tracking', 'Informal tracking, occasional gaps', 'Regular statement, 1–2 months runway', 'Forecast maintained, 3+ months runway'] },
+            ]
+          },
+          {
+            id: 's4',
+            title: 'Product / Service Offering',
+            maxScore: 20,
+            criteria: [
+              { id: 'c13', name: 'Value proposition clarity', weight: 1, options: ['Cannot articulate', 'Vague answer', 'Knows problem, fuzzy', 'Clear problem + solution', 'Sharp, customer-tested'] },
+              { id: 'c14', name: 'Quality consistency', weight: 1, options: ['No QC, complaints', 'Informal QC', 'Basic checks', 'Documented QC', 'Certified, near-zero defects'] },
+              { id: 'c15', name: 'Customer base & retention', weight: 2, isMustHave: true, options: ['0–2 one-time buyers', '3–10 low repeat', '10–50 moderate', '50–200 strong loyalty', '200+ NPS tracked'] },
+            ]
+          },
+          {
+            id: 's5',
+            title: 'Resources & Support Needed',
+            maxScore: 20,
+            criteria: [
+              { id: 'c16', name: 'Mentorship & guidance', weight: 1, options: ['No mentor', 'Occasional talk', '1–2 irregular', 'Regular tangible impact', 'Strong mentor network'] },
+              { id: 'c17', name: 'Network & linkages', weight: 1, options: ['Not used', 'Aware, not engaged', 'Some connections', 'Regular engagement', 'Multiple business outcomes'] },
+              { id: 'c18', name: 'Skill gap (reverse scored)', weight: 1, options: ['Critical gaps', '3–4 significant', '2–3 moderate', '1–2 minor gaps', 'No gaps, upskilling on'] },
+              { id: 'c19', name: 'Resource gap (reverse scored)', weight: 1, options: ['Severe constraint', '3+ resources needed', '2 needed', '1 manageable gap', 'Well-resourced'] },
+            ]
+          },
+          {
+            id: 's6',
+            title: 'Compliance & Legal Standing',
+            maxScore: 25,
+            criteria: [
+              { id: 'c20', name: 'Business registration', weight: 2, isMustHave: true, options: ['No registration', '1 basic only', '2–3 registrations', '4+ registrations', 'Fully compliant'] },
+              { id: 'c21', name: 'Tax compliance', weight: 1, options: ['No filings, notices', 'Filing irregularly', 'Filing but delayed', 'On time, no notices', 'Proactive, CA-managed'] },
+              { id: 'c22', name: 'Labour law compliance', weight: 1, options: ['No compliance', 'Aware, not compliant', 'Partial (1–2 rules)', 'PF/ESI + salary slips', 'Full HR compliance'] },
+              { id: 'c23', name: 'IP / brand protection', weight: 1, options: ['No IP awareness', 'Aware, no action', 'Applied, pending', '1 registration active', 'Multiple IP assets'] },
+            ]
+          },
+          {
+            id: 's7',
+            title: 'Growth Mindset & Innovation',
+            maxScore: 15,
+            criteria: [
+              { id: 'c24', name: 'Vision & goal clarity', weight: 1, options: ['No vision', 'Vague aspirations', '1-year informal', '3-year with milestones', '5-year written, reviewed'] },
+              { id: 'c25', name: 'Social / environmental impact', weight: 1, options: ['No awareness', 'Unmeasured', 'Informal stories', 'Some data collected', 'Documented, SDG-linked'] },
+              { id: 'c26', name: 'Collaboration & partnerships', weight: 1, options: ['No partnerships', '1 informal tie-up', '1–2 active', '3+ with outcomes', 'MoUs, co-ventures'] },
+            ]
+          }
+        ];
+
+        const INITIAL_BASIC_INFO = {
+          udyamiName: '',
+          mobile: '',
+          cohort: '',
+          village: '',
+          block: '',
+          district: '',
+          businessName: '',
+          businessType: '',
+          runningSince: '',
+          monthlyIncome: '',
+          noEmployed: '',
+          registration: '',
+          assessmentDate: new Date().toISOString().split('T')[0],
+          assessorNotes: ''
+        };
+
+        function App() {
+          // --- LOCAL STORAGE STATE ---
+          // Instead of Firebase, we use LocalStorage so it works standalone
+          const [assessorEmail, setAssessorEmail] = useState('');
+          const [emailInput, setEmailInput] = useState('');
+          
+          const [assessments, setAssessments] = useState([]);
+          const [view, setView] = useState('login'); // 'login', 'dashboard', 'form'
+          const [currentDraft, setCurrentDraft] = useState({ basic: { ...INITIAL_BASIC_INFO }, scores: {} });
+          const [activeTab, setActiveTab] = useState(0); 
+
+          // Load data from LocalStorage on mount
+          useEffect(() => {
+              const savedEmail = localStorage.getItem('jagritiAssessorEmail');
+              if (savedEmail) {
+                  setAssessorEmail(savedEmail);
+                  setView('dashboard');
+              }
+              
+              const savedAssessments = localStorage.getItem('jagritiAssessments');
+              if (savedAssessments) {
+                  setAssessments(JSON.parse(savedAssessments));
+              }
+          }, []);
+
+          // Save assessments to LocalStorage whenever they change
+          useEffect(() => {
+              if (assessments.length > 0) {
+                  localStorage.setItem('jagritiAssessments', JSON.stringify(assessments));
+              }
+          }, [assessments]);
+
+          // --- APP LOGIC ---
+          const handleLogin = (e) => {
+            e.preventDefault();
+            if (emailInput.trim().length > 3) {
+              const email = emailInput.trim();
+              setAssessorEmail(email);
+              localStorage.setItem('jagritiAssessorEmail', email);
+              setView('dashboard');
+            }
+          };
+
+          const handleLogout = () => {
+            setAssessorEmail('');
+            setEmailInput('');
+            localStorage.removeItem('jagritiAssessorEmail');
+            setView('login');
+          };
+
+          const getDraftResults = () => {
+            let totalScore = 0;
+            const maxTotal = 160;
+            const sectionScores = {};
+
+            SCORECARD_SECTIONS.forEach(section => {
+              let sectionScore = 0;
+              section.criteria.forEach(crit => {
+                const rawValue = currentDraft.scores[crit.id] || 0; 
+                const weightedValue = rawValue * crit.weight;
+                sectionScore += weightedValue;
+                totalScore += weightedValue;
+              });
+              sectionScores[section.id] = {
+                score: sectionScore,
+                max: section.maxScore,
+                percentage: section.maxScore > 0 ? Math.round((sectionScore / section.maxScore) * 100) : 0
+              };
+            });
+
+            const overallPercentage = Math.round((totalScore / maxTotal) * 100);
+            let status = '';
+            let statusColor = '';
+            
+            if (overallPercentage >= 80) { status = 'High Performer'; statusColor = 'text-green-700 bg-green-100 border-green-200'; }
+            else if (overallPercentage >= 60) { status = 'On Track'; statusColor = 'text-blue-700 bg-blue-100 border-blue-200'; }
+            else if (overallPercentage >= 40) { status = 'Needs Support'; statusColor = 'text-orange-700 bg-orange-100 border-orange-200'; }
+            else { status = 'Critical Support Needed'; statusColor = 'text-red-700 bg-red-100 border-red-200'; }
+
+            return { totalScore, maxTotal, overallPercentage, sectionScores, status, statusColor };
+          };
+
+          const handleStartNew = () => {
+            setCurrentDraft({ basic: { ...INITIAL_BASIC_INFO }, scores: {} });
+            setActiveTab(0);
+            setView('form');
+          };
+
+          const handleSaveAssessment = () => {
+            const results = getDraftResults();
+            const newId = Date.now().toString();
+            
+            const assessmentData = {
+              id: newId,
+              ...currentDraft,
+              results,
+              assessorEmail: assessorEmail,
+              createdAt: new Date().toISOString()
+            };
+            
+            setAssessments(prev => [assessmentData, ...prev]);
+            setView('dashboard');
+          };
+
+          const handleExportCSV = () => {
+            if (assessments.length === 0) return;
+
+            const headers = [
+              'Assessor Email', 'Udyami Name', 'Mobile', 'Cohort', 'District', 'Business Name', 'Business Type',
+              'Assessment Date', 'Total Score (/160)', 'Percentage (%)', 'Status', 'Assessor Notes',
+              ...SCORECARD_SECTIONS.flatMap(s => s.criteria.map(c => `[${s.title}] ${c.name} (Raw)`))
+            ];
+
+            const rows = assessments.map(a => {
+              const row = [
+                a.assessorEmail || 'Unknown', a.basic.udyamiName, a.basic.mobile, a.basic.cohort, a.basic.district, a.basic.businessName, a.basic.businessType,
+                a.basic.assessmentDate, a.results.totalScore, a.results.overallPercentage, a.results.status, 
+                `"${(a.basic.assessorNotes || '').replace(/"/g, '""')}"`
+              ];
+              
+              SCORECARD_SECTIONS.forEach(s => {
+                s.criteria.forEach(c => {
+                  row.push(a.scores[c.id] || 0);
+                });
+              });
+              return row.join(',');
+            });
+
+            const csvContent = [headers.join(','), ...rows].join('\n');
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', `Jagriti_Udyami_Assessments_${new Date().toISOString().split('T')[0]}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+          };
+
+          // --- RENDER LOGIN VIEW ---
+          if (view === 'login') {
+            return (
+              <div className="min-h-screen bg-gray-50 flex flex-col justify-center items-center p-4">
+                <div className="w-full max-w-md bg-white rounded-2xl shadow-xl border border-gray-100 p-8 animate-fade-in">
+                  <div className="flex justify-center mb-6">
+                    <div className="bg-orange-100 p-4 rounded-full">
+                      <Building2 className="text-orange-600" size={40} />
+                    </div>
+                  </div>
+                  <h1 className="text-2xl font-bold text-center text-gray-900 mb-2">Jagriti Assessor Portal</h1>
+                  <p className="text-center text-gray-500 mb-8">Enter your official email to access the Udyami Scorecards</p>
+                  
+                  <form onSubmit={handleLogin} className="space-y-6">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Official Email ID</label>
+                      <input 
+                        type="email" 
+                        required
+                        value={emailInput}
+                        onChange={(e) => setEmailInput(e.target.value)}
+                        className="w-full p-3 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none transition-all"
+                        placeholder="name@jagriti.org"
+                      />
+                    </div>
+                    <button 
+                      type="submit"
+                      className="w-full bg-orange-600 text-white font-bold py-3 rounded-lg hover:bg-orange-700 transition-colors shadow-md flex justify-center items-center gap-2"
+                    >
+                      Access Dashboard <ArrowRight size={18} />
+                    </button>
+                  </form>
+                </div>
+              </div>
+            );
+          }
+
+          // --- RENDER DASHBOARD VIEW ---
+          if (view === 'dashboard') {
+            return (
+              <div className="min-h-screen bg-gray-50 text-gray-800 p-6 font-sans">
+                <div className="max-w-7xl mx-auto">
+                  {/* Header */}
+                  <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4 bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                    <div>
+                      <h1 className="text-2xl md:text-3xl font-bold text-gray-900 flex items-center gap-3">
+                        <ClipboardList className="text-orange-600" size={32} />
+                        Assessment Dashboard
+                      </h1>
+                      <div className="flex items-center gap-2 mt-2 text-sm text-gray-500">
+                        <span className="font-medium text-gray-700">Logged in as: {assessorEmail}</span>
+                        <span className="mx-2">•</span>
+                        <span>Local Storage Active</span>
+                      </div>
+                    </div>
+                    <div className="flex flex-wrap gap-3">
+                      <button 
+                        onClick={handleExportCSV}
+                        disabled={assessments.length === 0}
+                        className="flex items-center gap-2 bg-gray-100 border border-gray-300 text-gray-700 px-4 py-2 rounded-lg font-medium hover:bg-gray-200 disabled:opacity-50 transition-colors"
+                      >
+                        <Download size={18} /> Export Excel
+                      </button>
+                      <button 
+                        onClick={handleStartNew}
+                        className="flex items-center gap-2 bg-orange-600 text-white px-5 py-2 rounded-lg font-medium hover:bg-orange-700 transition-colors shadow-sm"
+                      >
+                        <Plus size={18} /> New Assessment
+                      </button>
+                      <button 
+                        onClick={handleLogout}
+                        className="flex items-center gap-2 bg-white border border-red-200 text-red-600 px-4 py-2 rounded-lg font-medium hover:bg-red-50 transition-colors"
+                      >
+                        <LogOut size={18} /> Exit
+                      </button>
+                    </div>
+                  </div>
+
+                  {assessments.length === 0 ? (
+                    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-12 text-center flex flex-col items-center animate-fade-in">
+                      <div className="bg-orange-50 p-4 rounded-full text-orange-500 mb-4">
+                        <FileText size={48} />
+                      </div>
+                      <h3 className="text-xl font-semibold text-gray-800 mb-2">No Assessments Yet</h3>
+                      <p className="text-gray-500 max-w-md mb-6">Start your first assessment. Data is saved locally in your browser.</p>
+                      <button onClick={handleStartNew} className="bg-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-orange-700 shadow-sm flex items-center gap-2">
+                        Start First Assessment <ArrowRight size={18} />
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden animate-fade-in">
+                      <div className="overflow-x-auto">
+                        <table className="w-full text-left border-collapse min-w-[800px]">
+                          <thead>
+                            <tr className="bg-gray-50 border-b border-gray-200 text-xs uppercase text-gray-500 tracking-wider">
+                              <th className="p-4 font-semibold">Assessor</th>
+                              <th className="p-4 font-semibold">Udyami & Business</th>
+                              <th className="p-4 font-semibold">Date</th>
+                              <th className="p-4 font-semibold">Score</th>
+                              <th className="p-4 font-semibold">Status</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-gray-100">
+                            {assessments.map((a) => (
+                              <tr key={a.id} className="hover:bg-orange-50/30 transition-colors">
+                                <td className="p-4">
+                                  <div className="text-sm font-medium text-gray-700">{a.assessorEmail}</div>
+                                </td>
+                                <td className="p-4">
+                                  <div className="font-semibold text-gray-900">{a.basic.udyamiName || 'Unnamed Udyami'}</div>
+                                  <div className="text-sm text-gray-500">{a.basic.businessName || 'No business name'}</div>
+                                </td>
+                                <td className="p-4 text-sm text-gray-600">{a.basic.assessmentDate}</td>
+                                <td className="p-4">
+                                  <div className="flex items-center gap-2">
+                                    <div className="font-bold text-gray-800">{a.results.totalScore}<span className="text-gray-400 text-sm font-normal">/160</span></div>
+                                    <div className="text-xs font-bold text-blue-700 bg-blue-100 px-2 py-0.5 rounded">{a.results.overallPercentage}%</div>
+                                  </div>
+                                </td>
+                                <td className="p-4">
+                                  <span className={`px-3 py-1 rounded-full border text-xs font-bold ${a.results.statusColor}`}>
+                                    {a.results.status}
+                                  </span>
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            );
+          }
+
+          const results = getDraftResults();
+          const currentSection = activeTab > 0 ? SCORECARD_SECTIONS[activeTab - 1] : null;
+
+          // --- RENDER FORM WIZARD ---
+          return (
+            <div className="min-h-screen bg-gray-50 text-gray-800 font-sans flex flex-col">
+              {/* Top Header */}
+              <header className="bg-white border-b border-gray-200 sticky top-0 z-10 shadow-sm">
+                <div className="max-w-4xl mx-auto px-4 h-16 flex items-center justify-between">
+                  <button 
+                    onClick={() => {
+                       if(window.confirm("Are you sure? Unsaved progress will be lost.")) setView('dashboard');
+                    }}
+                    className="text-gray-500 hover:text-gray-900 flex items-center gap-2 font-medium"
+                  >
+                    <ArrowLeft size={18} /> Cancel
+                  </button>
+                  <div className="font-semibold text-gray-800 hidden md:block">
+                    {currentDraft.basic.udyamiName ? `Evaluating: ${currentDraft.basic.udyamiName}` : 'New Assessment'}
+                  </div>
+                  <div className="text-sm font-bold bg-orange-100 text-orange-800 px-3 py-1 rounded-lg flex items-center gap-2">
+                    <BarChart3 size={16} /> 
+                    Score: {results.totalScore}/160
+                  </div>
+                </div>
+                
+                {/* Progress Bar */}
+                <div className="w-full bg-gray-200 h-1.5 flex">
+                   {[...Array(SCORECARD_SECTIONS.length + 1)].map((_, idx) => (
+                     <div key={idx} className={`h-full flex-1 border-r border-white/20 transition-all ${idx <= activeTab ? 'bg-orange-500' : 'bg-transparent'}`} />
+                   ))}
+                </div>
+              </header>
+
+              <div className="flex-1 max-w-4xl mx-auto w-full p-4 md:p-6 pb-24">
+                
+                {/* --- STEP 0: BASIC INFO --- */}
+                {activeTab === 0 && (
+                  <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 md:p-8 animate-slide-up">
+                    <div className="flex justify-between items-center mb-6 pb-4 border-b border-gray-100">
+                      <div className="flex items-center gap-3">
+                        <div className="bg-orange-100 p-2 rounded-lg text-orange-600"><User size={24} /></div>
+                        <h2 className="text-2xl font-bold text-gray-900">Udyami Details</h2>
+                      </div>
+                      <div className="text-sm text-gray-500">Assessor: <span className="font-semibold text-gray-800">{assessorEmail}</span></div>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      {[
+                        { label: 'Udyami Name', id: 'udyamiName', type: 'text', req: true },
+                        { label: 'Mobile Number', id: 'mobile', type: 'tel' },
+                        { label: 'Business Name', id: 'businessName', type: 'text', req: true },
+                        { label: 'Business Type / Sector', id: 'businessType', type: 'text' },
+                        { label: 'Cohort / Batch', id: 'cohort', type: 'text' },
+                        { label: 'District', id: 'district', type: 'text' },
+                        { label: 'Assessment Date', id: 'assessmentDate', type: 'date' },
+                      ].map(field => (
+                        <div key={field.id} className="space-y-1.5">
+                          <label className="block text-sm font-medium text-gray-700">
+                            {field.label} {field.req && <span className="text-red-500">*</span>}
+                          </label>
+                          <input 
+                            type={field.type}
+                            value={currentDraft.basic[field.id]}
+                            onChange={(e) => setCurrentDraft(prev => ({...prev, basic: {...prev.basic, [field.id]: e.target.value}}))}
+                            className="w-full p-2.5 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none transition-all"
+                            placeholder={`Enter ${field.label.toLowerCase()}`}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* --- STEPS 1-7: SECTIONS --- */}
+                {activeTab > 0 && currentSection && (
+                  <div className="space-y-6 animate-slide-right">
+                    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 pb-4 flex justify-between items-end">
+                       <div>
+                         <h2 className="text-2xl font-bold text-gray-900">{currentSection.title}</h2>
+                         <div className="text-sm text-gray-500 mt-1">Section {activeTab} of {SCORECARD_SECTIONS.length}</div>
+                       </div>
+                       <div className="font-semibold text-orange-600 bg-orange-50 px-3 py-1 rounded-lg">Max: {currentSection.maxScore}</div>
+                    </div>
+
+                    {currentSection.criteria.map((criterion, idx) => (
+                      <div key={criterion.id} className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                        <div className="mb-4">
+                          <h3 className="text-lg font-bold text-gray-800 flex flex-wrap items-center gap-2">
+                            {idx + 1}. {criterion.name}
+                            {criterion.isMustHave && (
+                              <span className="bg-amber-100 text-amber-800 text-xs px-2 py-0.5 rounded-full font-bold flex items-center gap-1">
+                                ★ Must Have (2x weight)
+                              </span>
+                            )}
+                          </h3>
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-5 gap-3">
+                          {criterion.options.map((optionText, index) => {
+                            const scoreValue = index + 1;
+                            const isSelected = currentDraft.scores[criterion.id] === scoreValue;
+                            
+                            const bgColors = ['hover:bg-red-50 hover:border-red-200', 'hover:bg-orange-50 hover:border-orange-200', 'hover:bg-yellow-50 hover:border-yellow-200', 'hover:bg-lime-50 hover:border-lime-200', 'hover:bg-green-50 hover:border-green-200'];
+                            const activeColors = ['bg-red-50 border-red-500 ring-1 ring-red-500', 'bg-orange-50 border-orange-500 ring-1 ring-orange-500', 'bg-yellow-50 border-yellow-500 ring-1 ring-yellow-500', 'bg-lime-50 border-lime-500 ring-1 ring-lime-500', 'bg-green-50 border-green-500 ring-1 ring-green-500'];
+                            const labels = ['1 - Poor', '2 - Weak', '3 - Fair', '4 - Good', '5 - Strong'];
+
+                            return (
+                              <button
+                                key={scoreValue}
+                                onClick={() => setCurrentDraft(prev => ({
+                                  ...prev, 
+                                  scores: { ...prev.scores, [criterion.id]: scoreValue }
+                                }))}
+                                className={`text-left p-4 rounded-xl border-2 transition-all flex flex-col h-full
+                                  ${isSelected ? activeColors[index] : `border-gray-100 bg-white ${bgColors[index]}`}`}
+                              >
+                                <span className={`text-xs font-bold mb-2 uppercase tracking-wider ${isSelected ? 'text-gray-900' : 'text-gray-400'}`}>
+                                  {labels[index]}
+                                </span>
+                                <span className={`text-sm md:text-base leading-tight font-medium ${isSelected ? 'text-gray-900' : 'text-gray-600'}`}>
+                                  {optionText}
+                                </span>
+                                
+                                {isSelected && (
+                                  <div className="mt-auto pt-3 flex justify-end">
+                                    <CheckCircle size={18} className="text-blue-600" />
+                                  </div>
+                                )}
+                              </button>
+                            )
+                          })}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+              </div>
+
+              {/* Bottom Navigation Bar */}
+              <div className="bg-white border-t border-gray-200 fixed bottom-0 w-full p-4 z-20 shadow-[0_-4px_10px_rgba(0,0,0,0.02)]">
+                <div className="max-w-4xl mx-auto flex justify-between items-center">
+                  
+                  <button 
+                    onClick={() => setActiveTab(prev => Math.max(0, prev - 1))}
+                    disabled={activeTab === 0}
+                    className="px-5 py-2.5 rounded-lg font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 disabled:opacity-30 flex items-center gap-2 transition-colors"
+                  >
+                    <ArrowLeft size={18} /> Back
+                  </button>
+
+                  {activeTab < SCORECARD_SECTIONS.length ? (
+                    <button 
+                      onClick={() => {
+                        if (activeTab === 0 && !currentDraft.basic.udyamiName) {
+                          alert("Please enter at least the Udyami's Name to continue.");
+                          return;
+                        }
+                        setActiveTab(prev => prev + 1);
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                      }}
+                      className="px-6 py-2.5 rounded-lg font-bold text-white bg-orange-600 hover:bg-orange-700 flex items-center gap-2 shadow-md hover:shadow-lg transition-all"
+                    >
+                      Next Section <ArrowRight size={18} />
+                    </button>
+                  ) : (
+                    <button 
+                      onClick={() => {
+                        const isComplete = SCORECARD_SECTIONS.every(s => s.criteria.every(c => currentDraft.scores[c.id]));
+                        if (!isComplete) {
+                          if(!window.confirm("You have missed some questions. They will count as 0. Do you want to save anyway?")) {
+                            return;
+                          }
+                        }
+                        handleSaveAssessment();
+                      }}
+                      className="px-6 py-2.5 rounded-lg font-bold text-white bg-green-600 hover:bg-green-700 flex items-center gap-2 shadow-md hover:shadow-lg transition-all"
+                    >
+                      <Save size={18} /> Complete & Save
+                    </button>
+                  )}
+
+                </div>
+              </div>
+            </div>
+          );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
