@@ -1,845 +1,959 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Jagriti Udyami Scorecard</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css" />
+<title>Incubator Monthly MIS</title>
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  :root {
-    --orange: #E65100;
-    --orange-light: #FFF3E0;
-    --orange-dark: #BF360C;
-    --orange-border: #FFB74D;
-    --green: #2E7D32;
-    --green-light: #E8F5E9;
-    --green-border: #81C784;
-    --blue: #1565C0;
-    --blue-light: #E3F2FD;
-    --blue-border: #64B5F6;
-    --red: #C62828;
-    --red-light: #FFEBEE;
-    --red-border: #EF9A9A;
-    --amber: #E65100;
-    --amber-light: #FFF8E1;
-    --amber-border: #FFD54F;
-    --bg: #F5F5F0;
-    --card: #FFFFFF;
-    --border: rgba(0,0,0,0.09);
-    --border-strong: rgba(0,0,0,0.16);
-    --text: #1A1A1A;
-    --text-2: #555;
-    --text-3: #999;
-    --radius: 10px;
-    --radius-lg: 14px;
-    --font: 'DM Sans', sans-serif;
+  :root{
+    --ink:#1b2430;
+    --ink-soft:#5b6672;
+    --ink-faint:#8b95a1;
+    --line:#dfe4e9;
+    --line-strong:#c3cbd3;
+    --bg:#f6f7f9;
+    --card:#ffffff;
+    --teal:#0f6e56;
+    --teal-light:#e1f5ee;
+    --teal-dark:#04342c;
+    --amber:#854f0b;
+    --amber-light:#faeeda;
+    --red:#a32d2d;
+    --red-light:#fcebeb;
+    --radius:10px;
   }
-
-  html { scroll-behavior: smooth; }
-
-  body {
-    font-family: var(--font);
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    font-size: 15px;
-    line-height: 1.6;
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    line-height:1.5;
   }
-
-  /* ---- TOPBAR ---- */
-  .topbar {
-    background: var(--card);
-    border-bottom: 0.5px solid var(--border);
-    padding: 0 20px;
-    height: 56px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    box-shadow: 0 1px 0 var(--border);
+  .wrap{max-width:960px;margin:0 auto;padding:24px 16px 64px;}
+  header.top{
+    display:flex;align-items:center;justify-content:space-between;
+    margin-bottom:20px;flex-wrap:wrap;gap:12px;
   }
-  .topbar-left { display: flex; align-items: center; gap: 10px; }
-  .topbar-brand { font-size: 15px; font-weight: 600; color: var(--text); }
-  .topbar-sub { font-size: 12px; color: var(--text-2); }
-  .score-badge {
-    background: var(--orange-light);
-    color: var(--orange);
-    border: 0.5px solid var(--orange-border);
-    border-radius: var(--radius);
-    padding: 5px 13px;
-    font-size: 13px;
-    font-weight: 600;
+  header.top h1{font-size:19px;font-weight:600;margin:0;color:var(--teal-dark);}
+  header.top p{margin:2px 0 0;font-size:13px;color:var(--ink-soft);}
+  .tabs{display:flex;gap:6px;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:4px;}
+  .tab-btn{
+    border:none;background:transparent;padding:8px 16px;border-radius:7px;
+    font-size:13px;font-weight:600;color:var(--ink-soft);cursor:pointer;
   }
-
-  .progress-bar { height: 3px; background: #eee; display: flex; }
-  .progress-seg { height: 100%; transition: background 0.3s; flex: 1; }
-  .progress-seg.filled { background: var(--orange); }
-  .progress-seg.active { background: var(--orange-border); }
-
-  /* ---- MAIN ---- */
-  .main { max-width: 680px; margin: 0 auto; padding: 24px 16px 100px; width: 100%; }
-
-  /* ---- CARDS ---- */
-  .card {
-    background: var(--card);
-    border: 0.5px solid var(--border);
-    border-radius: var(--radius-lg);
-    padding: 24px;
-    margin-bottom: 16px;
+  .tab-btn.active{background:var(--teal);color:#fff;}
+  .card{
+    background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+    padding:20px;margin-bottom:16px;
   }
-
-  .section-header { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 20px; }
-  .section-icon {
-    width: 42px; height: 42px; min-width: 42px;
-    background: var(--orange-light);
-    border-radius: var(--radius);
-    display: flex; align-items: center; justify-content: center;
-    color: var(--orange);
-    font-size: 20px;
+  .card h2{font-size:16px;margin:0 0 4px;font-weight:600;}
+  .card .sub{font-size:12px;color:var(--ink-soft);margin:0 0 16px;}
+  label{display:block;font-size:12px;font-weight:600;color:var(--ink-soft);margin-bottom:5px;}
+  label .en{color:var(--ink-faint);font-weight:500;}
+  input,select,textarea{
+    width:100%;padding:9px 10px;border:1px solid var(--line-strong);border-radius:7px;
+    font-size:14px;background:#fff;color:var(--ink);font-family:inherit;
   }
-  .section-title { font-size: 17px; font-weight: 600; color: var(--text); line-height: 1.3; }
-  .section-meta { font-size: 12px; color: var(--text-2); margin-top: 2px; }
-
-  /* ---- FORM FIELDS ---- */
-  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-  .form-group { display: flex; flex-direction: column; gap: 5px; }
-  .form-group.full { grid-column: 1 / -1; }
-  .form-label { font-size: 12px; font-weight: 500; color: var(--text-2); text-transform: uppercase; letter-spacing: 0.04em; }
-  .form-label .req { color: var(--orange); }
-  .form-input {
-    border: 0.5px solid var(--border-strong);
-    border-radius: var(--radius);
-    padding: 10px 13px;
-    font-size: 14px;
-    background: #FAFAF8;
-    color: var(--text);
-    outline: none;
-    transition: border-color 0.15s, box-shadow 0.15s;
-    font-family: var(--font);
-    width: 100%;
+  input:focus,select:focus,textarea:focus{outline:2px solid var(--teal);outline-offset:0;border-color:var(--teal);}
+  textarea{resize:vertical;min-height:60px;}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}
+  @media (max-width:600px){.grid2,.grid3{grid-template-columns:1fr;}}
+  .field{margin-bottom:14px;}
+  .section-label{
+    font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;
+    color:var(--teal);margin:22px 0 10px;padding-top:14px;border-top:1px solid var(--line);
   }
-  .form-input:focus { border-color: var(--orange); box-shadow: 0 0 0 3px rgba(230,81,0,0.1); }
-  textarea.form-input { resize: vertical; min-height: 80px; }
-
-  /* ---- CRITERION ---- */
-  .criterion-card {
-    border: 0.5px solid var(--border);
-    border-radius: var(--radius-lg);
-    padding: 16px;
-    margin-bottom: 12px;
-    transition: border-color 0.2s;
+  .section-label:first-of-type{border-top:none;padding-top:0;margin-top:0;}
+  button.primary{
+    background:var(--teal);color:#fff;border:none;padding:11px 22px;border-radius:7px;
+    font-size:14px;font-weight:600;cursor:pointer;
   }
-  .criterion-card.answered { border-color: var(--green-border); background: #FAFFFE; }
-  .criterion-title {
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--text);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex-wrap: wrap;
-    margin-bottom: 10px;
+  button.primary:hover{background:var(--teal-dark);}
+  button.ghost{
+    background:transparent;color:var(--teal);border:1px solid var(--line-strong);
+    padding:8px 14px;border-radius:7px;font-size:13px;font-weight:600;cursor:pointer;
   }
-  .must-badge {
-    background: var(--amber-light);
-    color: #F57F17;
-    border: 0.5px solid var(--amber-border);
-    border-radius: 999px;
-    font-size: 11px;
-    font-weight: 600;
-    padding: 2px 8px;
-  }
-
-  .options-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
-  .option-btn {
-    border: 0.5px solid var(--border-strong);
-    border-radius: var(--radius);
-    padding: 8px 5px;
-    font-size: 11px;
-    text-align: center;
-    cursor: pointer;
-    background: var(--card);
-    color: var(--text-2);
-    transition: all 0.15s;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 3px;
-    line-height: 1.3;
-    font-family: var(--font);
-  }
-  .option-btn:hover { border-color: var(--orange); color: var(--text); background: var(--orange-light); }
-  .option-score-lbl { font-size: 10px; font-weight: 700; }
-  .option-text { font-size: 10px; }
-
-  .sel-1 { background: #FFEBEE !important; border-color: #EF9A9A !important; color: #C62828 !important; }
-  .sel-2 { background: #FFF3E0 !important; border-color: #FFCC80 !important; color: #BF360C !important; }
-  .sel-3 { background: #FFFDE7 !important; border-color: #FFE57F !important; color: #827717 !important; }
-  .sel-4 { background: #F1F8E9 !important; border-color: #AED581 !important; color: #33691E !important; }
-  .sel-5 { background: #E8F5E9 !important; border-color: #81C784 !important; color: #1B5E20 !important; }
-
-  /* ---- BOTTOM NAV ---- */
-  .bottombar {
-    background: var(--card);
-    border-top: 0.5px solid var(--border);
-    padding: 12px 20px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    position: fixed;
-    bottom: 0; left: 0; right: 0;
-    z-index: 100;
-  }
-  .step-counter { font-size: 12px; color: var(--text-2); }
-
-  .btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 9px 18px;
-    border-radius: var(--radius);
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    border: 0.5px solid var(--border-strong);
-    background: var(--card);
-    color: var(--text);
-    transition: all 0.15s;
-    font-family: var(--font);
-    text-decoration: none;
-  }
-  .btn:hover { background: #F0EDE8; }
-  .btn:disabled { opacity: 0.35; cursor: not-allowed; }
-  .btn-primary { background: var(--orange); border-color: var(--orange); color: #fff; }
-  .btn-primary:hover { background: var(--orange-dark); border-color: var(--orange-dark); }
-  .btn-success { background: var(--green); border-color: var(--green); color: #fff; }
-  .btn-success:hover { background: #1B5E20; }
-  .btn-danger { background: #fff; border-color: #EF9A9A; color: var(--red); }
-  .btn-danger:hover { background: var(--red-light); }
-
-  .btn-row { display: flex; gap: 8px; flex-wrap: wrap; }
-
-  /* ---- DASHBOARD ---- */
-  .dash-header {
-    background: var(--card);
-    border: 0.5px solid var(--border);
-    border-radius: var(--radius-lg);
-    padding: 20px 24px;
-    margin-bottom: 16px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 12px;
-  }
-  .dash-title { font-size: 17px; font-weight: 600; }
-  .dash-meta { font-size: 12px; color: var(--text-2); margin-top: 2px; }
-
-  .assessments-table {
-    background: var(--card);
-    border: 0.5px solid var(--border);
-    border-radius: var(--radius-lg);
-    overflow: hidden;
-  }
-  table { width: 100%; border-collapse: collapse; font-size: 13px; }
-  thead tr { background: #FAFAF8; }
-  th { padding: 10px 16px; text-align: left; font-weight: 600; color: var(--text-2); font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 0.5px solid var(--border); }
-  td { padding: 13px 16px; border-bottom: 0.5px solid var(--border); vertical-align: middle; }
-  tr:last-child td { border-bottom: none; }
-  tr:hover td { background: #FAFAF8; }
-
-  .status-pill {
-    display: inline-block;
-    border-radius: 999px;
-    font-size: 11px;
-    font-weight: 600;
-    padding: 3px 10px;
-    border: 0.5px solid;
-  }
-  .s-high { background: var(--green-light); border-color: var(--green-border); color: var(--green); }
-  .s-good { background: var(--blue-light); border-color: var(--blue-border); color: var(--blue); }
-  .s-needs { background: var(--orange-light); border-color: var(--orange-border); color: var(--orange); }
-  .s-critical { background: var(--red-light); border-color: var(--red-border); color: var(--red); }
-
-  /* ---- LOGIN ---- */
-  .login-page {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 24px 16px;
-    background: var(--bg);
-  }
-  .login-card {
-    background: var(--card);
-    border: 0.5px solid var(--border);
-    border-radius: var(--radius-lg);
-    padding: 36px 32px;
-    width: 100%;
-    max-width: 380px;
-    box-shadow: 0 4px 24px rgba(0,0,0,0.06);
-  }
-  .login-logo-icon {
-    width: 60px; height: 60px;
-    background: var(--orange-light);
-    border-radius: var(--radius-lg);
-    display: flex; align-items: center; justify-content: center;
-    margin: 0 auto 16px;
-    font-size: 30px;
-    color: var(--orange);
-  }
-  .login-title { font-size: 20px; font-weight: 600; text-align: center; margin-bottom: 6px; }
-  .login-sub { font-size: 13px; color: var(--text-2); text-align: center; margin-bottom: 28px; line-height: 1.6; }
-  .err-msg { color: var(--red); font-size: 12px; margin-top: 8px; display: none; }
-
-  /* ---- RESULTS ---- */
-  .results-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 18px; }
-  .result-metric {
-    background: #FAFAF8;
-    border: 0.5px solid var(--border);
-    border-radius: var(--radius);
-    padding: 14px 16px;
-  }
-  .result-metric-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-2); margin-bottom: 4px; }
-  .result-metric-val { font-size: 26px; font-weight: 600; color: var(--text); }
-
-  .section-result-row { display: flex; align-items: center; padding: 9px 0; border-bottom: 0.5px solid var(--border); }
-  .section-result-row:last-child { border-bottom: none; }
-  .mini-bar-bg { height: 6px; background: #eee; border-radius: 3px; flex: 1; margin: 0 12px; }
-  .mini-bar-fill { height: 6px; border-radius: 3px; background: var(--orange); }
-  .section-result-name { font-size: 13px; min-width: 190px; color: var(--text-2); }
-  .section-result-score { font-size: 13px; font-weight: 600; min-width: 55px; text-align: right; }
-
-  /* ---- VIEWS ---- */
-  .view { display: none; }
-  .view.active { display: block; }
-  #login-view.active { display: flex; flex-direction: column; min-height: 100vh; }
-
-  /* ---- MOBILE ---- */
-  @media (max-width: 480px) {
-    .form-grid { grid-template-columns: 1fr; }
-    .options-grid { grid-template-columns: repeat(5, 1fr); }
-    .option-btn { padding: 6px 3px; }
-    .option-text { display: none; }
-    .dash-header { flex-direction: column; align-items: flex-start; }
-    .results-grid { grid-template-columns: 1fr; }
-    .section-result-name { min-width: 120px; font-size: 12px; }
-    table { font-size: 12px; }
-    th, td { padding: 10px 10px; }
-  }
-
-  /* ---- PRINT ---- */
-  @media print {
-    .topbar, .bottombar, .btn-row { display: none !important; }
-    .main { padding-bottom: 20px; }
-    .card { break-inside: avoid; }
-  }
+  button.ghost:hover{background:var(--teal-light);}
+  .msg{padding:10px 14px;border-radius:7px;font-size:13px;margin-bottom:14px;display:none;}
+  .msg.ok{background:var(--teal-light);color:var(--teal-dark);display:block;}
+  .msg.err{background:var(--red-light);color:var(--red);display:block;}
+  table{width:100%;border-collapse:collapse;font-size:12.5px;}
+  th,td{padding:8px 9px;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap;}
+  th{color:var(--ink-soft);font-weight:600;background:#fafbfc;position:sticky;top:0;}
+  .tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:8px;}
+  .stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:16px;}
+  .stat{background:#fafbfc;border:1px solid var(--line);border-radius:8px;padding:12px 14px;}
+  .stat .num{font-size:20px;font-weight:700;color:var(--teal-dark);}
+  .stat .lbl{font-size:11px;color:var(--ink-soft);margin-top:2px;}
+  .filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;align-items:flex-end;}
+  .filters .field{margin-bottom:0;min-width:150px;}
+  .empty{text-align:center;padding:40px 10px;color:var(--ink-faint);font-size:13px;}
+  .toolbar{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap;}
+  .loading{text-align:center;padding:30px;color:var(--ink-soft);font-size:13px;}
+  .ent-manage{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;}
+  .ent-manage input{flex:1;min-width:120px;}
+  .small-note{font-size:11px;color:var(--ink-faint);margin-top:6px;}
+  .ent-row{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:6px 10px;background:#fafbfc;border:1px solid var(--line);border-radius:6px;margin-bottom:5px;font-size:12.5px;}
+  .ent-row .name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .ent-row button{background:transparent;border:none;color:var(--red);font-size:11px;font-weight:700;cursor:pointer;padding:3px 6px;white-space:nowrap;}
+  .ent-row button:hover{text-decoration:underline;}
+  .pin-box{max-width:340px;margin:20px auto;text-align:center;}
+  .pin-box input{text-align:center;letter-spacing:2px;font-size:18px;}
+  .pin-box .msg2{font-size:12.5px;margin-top:10px;min-height:18px;}
+  .pin-box .msg2.err{color:var(--red);}
+  .pin-box .msg2.ok{color:var(--teal-dark);}
+  .lang-switch{display:flex;gap:4px;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:3px;}
+  .lang-switch button{border:none;background:transparent;padding:6px 12px;border-radius:6px;font-size:12px;font-weight:600;color:var(--ink-soft);cursor:pointer;}
+  .lang-switch button.active{background:var(--amber-light);color:var(--amber);}
 </style>
 </head>
 <body>
+<div class="wrap">
 
-<!-- LOGIN VIEW -->
-<div id="login-view" class="view active">
-  <div class="login-page">
-    <div class="login-card">
-      <div class="login-logo-icon"><i class="ti ti-building-community"></i></div>
-      <div class="login-title">Jagriti Assessor Portal</div>
-      <div class="login-sub">Enter your official email to access the Udyami Scorecard system</div>
-      <div class="form-group" style="margin-bottom:14px;">
-        <label class="form-label">Official email ID <span class="req">*</span></label>
-        <input class="form-input" id="email-input" type="email" placeholder="name@jagriti.org" />
-      </div>
-      <button class="btn btn-primary" id="login-btn" style="width:100%;justify-content:center;">
-        Access dashboard <i class="ti ti-arrow-right"></i>
-      </button>
-      <div class="err-msg" id="login-err">Please enter a valid email address.</div>
-    </div>
+  <div id="storageWarning" style="display:none;background:#fdf6e3;color:#854f0b;border:1px solid #f0e0b8;border-radius:8px;padding:8px 12px;font-size:11.5px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;gap:10px;">
+    <span id="storageWarningText" style="flex:1;"></span>
+    <button onclick="document.getElementById('storageWarning').style.display='none'" style="background:none;border:none;color:#854f0b;font-size:14px;font-weight:700;cursor:pointer;padding:0 4px;">×</button>
   </div>
-</div>
 
-<!-- DASHBOARD VIEW -->
-<div id="dashboard-view" class="view">
-  <div class="topbar">
-    <div class="topbar-left">
-      <i class="ti ti-clipboard-list" style="font-size:20px;color:var(--orange);"></i>
-      <div>
-        <div class="topbar-brand">Master Assessment Dashboard</div>
-        <div class="topbar-sub" id="dash-user-label"></div>
+  <header class="top">
+    <div>
+      <h1 data-t="appTitle">MSME इनक्यूबेटर – मासिक MIS डेटा</h1>
+      <p data-t="appSub">30 तक उद्यमी | मासिक डेटा संग्रहण</p>
+    </div>
+    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+      <div class="lang-switch">
+        <button id="langHiBtn" class="active" onclick="setLang('bi')">हिं + EN</button>
+        <button id="langEnBtn" onclick="setLang('en')">EN only</button>
+      </div>
+      <div class="tabs">
+        <button class="tab-btn active" id="tabBtnSubmit" onclick="switchTab('submit')" data-t="tabSubmit">उद्यमी फॉर्म</button>
+        <button class="tab-btn" id="tabBtnDash" onclick="switchTab('dash')" data-t="tabDash">टीम डैशबोर्ड</button>
       </div>
     </div>
-    <div class="btn-row">
-      <button class="btn" id="export-btn" disabled><i class="ti ti-download"></i> Export CSV</button>
-      <button class="btn btn-primary" id="new-btn"><i class="ti ti-plus"></i> New assessment</button>
-      <button class="btn btn-danger" id="logout-btn"><i class="ti ti-logout"></i> Exit</button>
+  </header>
+
+  <!-- SUBMIT TAB -->
+  <div id="tabSubmit">
+    <div class="card">
+      <h2 data-t="formHeading">अपना मासिक डेटा भरें</h2>
+      <p class="sub" data-t="formSub">अपना नाम और एंटरप्राइज़ चुनें, महीना चुनें, और नीचे जानकारी भरें।</p>
+      <div id="submitMsg" class="msg"></div>
+
+      <div class="grid2">
+        <div class="field">
+          <label data-t="lblEntity">उद्यमी / एंटरप्राइज़ चुनें</label>
+          <select id="entSelect" onchange="computeRevenueGrowth()"></select>
+          <div class="ent-manage">
+            <input type="text" id="newUdyamiName" data-tph="phUdyami" placeholder="उद्यमी का नाम">
+            <input type="text" id="newEntName" data-tph="phEnterprise" placeholder="एंटरप्राइज़ का नाम">
+            <button class="ghost" onclick="addEnterprise()" data-t="btnAdd">जोड़ें</button>
+          </div>
+          <div class="small-note" data-t="noteScale">लिस्ट 30 या उससे ज़्यादा उद्यमियों तक अपने आप बढ़ जाएगी।</div>
+          <div id="entityManageList" style="margin-top:10px;"></div>
+        </div>
+        <div class="field">
+          <label data-t="lblMonth">महीना / वर्ष</label>
+          <input type="month" id="monthInput" value="2026-05" onchange="computeRevenueGrowth()" />
+        </div>
+      </div>
+
+      <div class="section-label" data-t="secEmployees">कर्मचारी संख्या (Employees)</div>
+      <div class="grid3">
+        <div class="field"><label data-t="f1">1. फुल टाइम पुरुष कर्मचारी</label><input type="number" min="0" id="f1" value="0"></div>
+        <div class="field"><label data-t="f2">2. फुल टाइम महिला कर्मचारी</label><input type="number" min="0" id="f2" value="0"></div>
+        <div class="field"><label data-t="f3">3. पार्ट टाइम पुरुष कर्मचारी</label><input type="number" min="0" id="f3" value="0"></div>
+        <div class="field"><label data-t="f4">4. पार्ट टाइम महिला कर्मचारी</label><input type="number" min="0" id="f4" value="0"></div>
+        <div class="field"><label data-t="f5">5. सीजनल पुरुष कर्मचारी (डिमांड बेसिस)</label><input type="number" min="0" id="f5" value="0"></div>
+        <div class="field"><label data-t="f6">6. सीजनल महिला कर्मचारी</label><input type="number" min="0" id="f6" value="0"></div>
+      </div>
+
+      <div class="section-label" data-t="secSalary">वेतन (Salary)</div>
+      <div class="grid3">
+        <div class="field"><label data-t="f7">7. फुल टाइम कर्मचारियों की कुल सैलरी (मासिक)</label><input type="text" id="f7" placeholder="80k - 100k"></div>
+        <div class="field"><label data-t="f8">8. पार्ट टाइम कर्मचारियों की कुल सैलरी</label><input type="text" id="f8" placeholder="upto 20k"></div>
+        <div class="field"><label data-t="f9">9. सीजनल कर्मचारियों की कुल सैलरी</label><input type="text" id="f9" placeholder="NA"></div>
+      </div>
+
+      <div class="section-label" data-t="secBusiness">बिज़नेस परफॉरमेंस</div>
+      <div class="grid3">
+        <div class="field"><label data-t="f10">10. रेफरेंस / कनेक्ट (एक एंटरप्राइज़ से दूसरे को)</label><input type="number" min="0" id="f10" value="0"></div>
+        <div class="field"><label data-t="f12">12. इस महीने की सेल्स राशि</label><input type="number" step="0.01" min="0" id="f12" placeholder="जैसे: 150000" oninput="computeRevenueGrowth()"></div>
+        <div class="field"><label data-t="f13">13. रेवेन्यू ग्रोथ (ऑटो कैलकुलेटेड)</label><input type="text" id="f13" placeholder="NA" readonly style="background:#f5f6f8;color:var(--ink-soft);"></div>
+        <div class="field"><label data-t="f14">14. कुल प्रोसेस हुए ऑर्डर</label><input type="text" id="f14" placeholder="NA"></div>
+        <div class="field"><label data-t="f15">15. नए ग्राहकों की संख्या</label><input type="text" id="f15" placeholder="5+ in pipeline"></div>
+        <div class="field"><label data-t="f16">16. रिपीट ऑर्डर</label><input type="text" id="f16" placeholder="NA"></div>
+      </div>
+
+      <div class="section-label" data-t="secHighlights">महीने की मुख्य बातें</div>
+      <div class="field">
+        <label data-t="f11">11. इस महीने की मुख्य हाइलाइट्स</label>
+        <textarea id="f11" placeholder="Product Launches, Geography expansion"></textarea>
+      </div>
+
+      <button class="primary" id="submitBtn" onclick="submitData()" data-t="btnSubmit">डेटा सबमिट करें</button>
     </div>
   </div>
-  <div class="main" id="dash-main"></div>
-</div>
 
-<!-- FORM VIEW -->
-<div id="form-view" class="view">
-  <div class="topbar">
-    <button class="btn" id="cancel-btn" style="padding:7px 14px;"><i class="ti ti-arrow-left"></i> Cancel</button>
-    <div id="form-name-label" style="font-size:13px;color:var(--text-2);"></div>
-    <div class="score-badge" id="live-score">Score: 0 / 160</div>
-  </div>
-  <div class="progress-bar" id="progress-bar"></div>
-  <div class="main" id="form-main"></div>
-  <div class="bottombar">
-    <button class="btn" id="back-btn" disabled><i class="ti ti-arrow-left"></i> Back</button>
-    <div class="step-counter" id="step-counter"></div>
-    <button class="btn btn-primary" id="next-btn">Next <i class="ti ti-arrow-right"></i></button>
-  </div>
-</div>
+  <!-- DASHBOARD TAB -->
+  <div id="tabDash" style="display:none;">
+    <div id="pinGate" class="card" style="display:none;">
+      <div class="pin-box">
+        <h2 id="pinHeading" data-t="pinHeading" style="margin-bottom:6px;">टीम एक्सेस / Team Access</h2>
+        <p class="sub" id="pinSub"></p>
+        <input type="password" id="pinInput" maxlength="12" placeholder="PIN" onkeydown="if(event.key==='Enter') handlePinSubmit()" />
+        <div style="margin-top:10px;"><button class="primary" id="pinBtn" onclick="handlePinSubmit()">जारी रखें / Continue</button></div>
+        <div class="msg2" id="pinMsg"></div>
+      </div>
+    </div>
+    <div id="dashContent" style="display:none;">
+    <div class="card">
+      <div class="toolbar">
+        <h2 style="margin:0;" data-t="dashHeading">सभी उद्यमियों का डेटा</h2>
+        <button class="ghost" onclick="exportCSV()" data-t="btnExport">CSV डाउनलोड करें</button>
+      </div>
+      <p class="sub" data-t="dashSub">टीम यहाँ सभी उद्यमियों का मासिक डेटा देख सकती है, फ़िल्टर कर सकती है और MIS में भर सकती है।</p>
 
-<!-- RESULT VIEW -->
-<div id="result-view" class="view">
-  <div class="topbar">
-    <button class="btn" id="result-back-btn" style="padding:7px 14px;"><i class="ti ti-arrow-left"></i> Edit</button>
-    <div style="font-size:15px;font-weight:600;">Assessment results</div>
-    <button class="btn btn-success" id="save-btn"><i class="ti ti-device-floppy"></i> Save to dashboard</button>
+      <div class="filters">
+        <div class="field">
+          <label data-t="filterMonthLbl">महीना फ़िल्टर करें</label>
+          <select id="filterMonth"><option value="" data-t="allMonths">सभी महीने</option></select>
+        </div>
+        <div class="field">
+          <label data-t="filterEntLbl">उद्यमी फ़िल्टर करें</label>
+          <select id="filterEnt"><option value="" data-t="allEnt">सभी उद्यमी</option></select>
+        </div>
+        <button class="ghost" onclick="refreshDashboard()" data-t="btnRefresh">रिफ्रेश करें</button>
+        <button class="ghost" onclick="deleteEntityData()" style="color:var(--red);border-color:#f0c9c9;" data-t="btnDeleteData">चुने गए उद्यमी का पूरा डेटा मिटाएं</button>
+      </div>
+
+      <div class="stat-grid" id="statGrid"></div>
+
+      <div id="dashLoading" class="loading" data-t="loadingTxt">डेटा लोड हो रहा है...</div>
+      <div class="tbl-wrap" id="dashTableWrap" style="display:none;">
+        <table id="dashTable">
+          <thead>
+            <tr id="dashHeadRow"></tr>
+          </thead>
+          <tbody id="dashTableBody"></tbody>
+        </table>
+      </div>
+      <div class="empty" id="dashEmpty" style="display:none;" data-t="emptyTxt">अभी तक कोई डेटा सबमिट नहीं हुआ है।</div>
+    </div>
+    </div>
   </div>
-  <div class="main" id="result-main"></div>
+
 </div>
 
 <script>
-const SECTIONS = [
-  { id:'s1', title:'Business capacity', icon:'ti-building', maxScore:15, criteria:[
-    { id:'c1', name:'Infrastructure & workspace', weight:1, options:['No space/equipment','Home-based, minimal tools','Rented, basic setup','Adequate owned/rented','Well-equipped premises'] },
-    { id:'c2', name:'Core team strength', weight:1, options:['Solo founder','1 part-time helper','2–3 with roles','4–6 stable team','7+ clear hierarchy'] },
-    { id:'c3', name:'Technology adoption', weight:1, options:['No digital tools','WhatsApp only','Spreadsheets/free apps','Multiple tools','Integrated stack'] },
-  ]},
-  { id:'s2', title:'Employment generated', icon:'ti-users', maxScore:20, criteria:[
-    { id:'c4', name:'Direct employees', weight:2, isMustHave:true, options:['Only founder','1–2 casual','3–5 employees','6–15 employees','16+ growing'] },
-    { id:'c5', name:'Indirect livelihoods', weight:1, options:['None','1–2 helpers','3–5 earners','6–15 earners','15+ supported'] },
-    { id:'c6', name:'Wage quality', weight:1, options:['Irregular/below min','Min wage delayed','Min wage on time','Above min + benefits','Fair wage + increments'] },
-  ]},
-  { id:'s3', title:'Revenue & financial health', icon:'ti-cash', maxScore:45, criteria:[
-    { id:'c7', name:'Revenue stage', weight:2, isMustHave:true, options:['No revenue','Revenue, heavy loss','Break-even','Small consistent profit','Strong growing profit'] },
-    { id:'c8', name:'Revenue growth trend', weight:1, options:['Declining','Flat/no direction','1–10% growth','10–30% growth','>30% momentum'] },
-    { id:'c9', name:'Gross margin health', weight:1, options:['Unaware of margins','Knows it\'s low','~10–20% margin','~20–40% margin','>40% margin'] },
-    { id:'c10', name:'Financial record-keeping', weight:2, isMustHave:true, options:['No records','Cash register only','Informal digital','GST + basic accounts','Full books, CA-reviewed'] },
-    { id:'c11', name:'Funding & credit access', weight:1, options:['None, not applied','Applied, rejected','Informal loan','Formal loan/scheme','Multiple funding sources'] },
-    { id:'c12', name:'Cash flow management', weight:2, isMustHave:true, options:['Always cash-short','Frequent shortfalls, no tracking','Informal tracking, occasional gaps','Regular statement, 1–2 months runway','Forecast maintained, 3+ months runway'] },
-  ]},
-  { id:'s4', title:'Product / service offering', icon:'ti-package', maxScore:20, criteria:[
-    { id:'c13', name:'Value proposition clarity', weight:1, options:['Cannot articulate','Vague answer','Knows problem, fuzzy','Clear problem + solution','Sharp, customer-tested'] },
-    { id:'c14', name:'Quality consistency', weight:1, options:['No QC, complaints','Informal QC','Basic checks','Documented QC','Certified, near-zero defects'] },
-    { id:'c15', name:'Customer base & retention', weight:2, isMustHave:true, options:['0–2 one-time buyers','3–10 low repeat','10–50 moderate','50–200 strong loyalty','200+ NPS tracked'] },
-  ]},
-  { id:'s5', title:'Resources & support needed', icon:'ti-lifebuoy', maxScore:20, criteria:[
-    { id:'c16', name:'Mentorship & guidance', weight:1, options:['No mentor','Occasional talk','1–2 irregular','Regular tangible impact','Strong mentor network'] },
-    { id:'c17', name:'Network & linkages', weight:1, options:['Not used','Aware, not engaged','Some connections','Regular engagement','Multiple business outcomes'] },
-    { id:'c18', name:'Skill gap (reverse scored)', weight:1, options:['Critical gaps','3–4 significant','2–3 moderate','1–2 minor gaps','No gaps, upskilling on'] },
-    { id:'c19', name:'Resource gap (reverse scored)', weight:1, options:['Severe constraint','3+ resources needed','2 needed','1 manageable gap','Well-resourced'] },
-  ]},
-  { id:'s6', title:'Compliance & legal standing', icon:'ti-certificate', maxScore:25, criteria:[
-    { id:'c20', name:'Business registration', weight:2, isMustHave:true, options:['No registration','1 basic only','2–3 registrations','4+ registrations','Fully compliant'] },
-    { id:'c21', name:'Tax compliance', weight:1, options:['No filings, notices','Filing irregularly','Filing but delayed','On time, no notices','Proactive, CA-managed'] },
-    { id:'c22', name:'Labour law compliance', weight:1, options:['No compliance','Aware, not compliant','Partial (1–2 rules)','PF/ESI + salary slips','Full HR compliance'] },
-    { id:'c23', name:'IP / brand protection', weight:1, options:['No IP awareness','Aware, no action','Applied, pending','1 registration active','Multiple IP assets'] },
-  ]},
-  { id:'s7', title:'Growth mindset & innovation', icon:'ti-bulb', maxScore:15, criteria:[
-    { id:'c24', name:'Vision & goal clarity', weight:1, options:['No vision','Vague aspirations','1-year informal','3-year with milestones','5-year written, reviewed'] },
-    { id:'c25', name:'Social / environmental impact', weight:1, options:['No awareness','Unmeasured','Informal stories','Some data collected','Documented, SDG-linked'] },
-    { id:'c26', name:'Collaboration & partnerships', weight:1, options:['No partnerships','1 informal tie-up','1–2 active','3+ with outcomes','MoUs, co-ventures'] },
-  ]},
-];
+const T = {
+  bi: {
+    appTitle:"MSME इनक्यूबेटर – मासिक MIS डेटा / Monthly MIS Data",
+    appSub:"30 तक उद्यमी | मासिक डेटा संग्रहण / Up to 30 enterprises, monthly collection",
+    tabSubmit:"उद्यमी फॉर्म / Udyami Form",
+    tabDash:"टीम डैशबोर्ड / Team Dashboard",
+    formHeading:"अपना मासिक डेटा भरें / Submit your monthly data",
+    formSub:"अपना नाम और एंटरप्राइज़ चुनें, महीना चुनें, और नीचे जानकारी भरें। / Select your name and enterprise, pick the month, and fill in the details below.",
+    lblEntity:"उद्यमी / एंटरप्राइज़ चुनें / Select udyami / enterprise",
+    phUdyami:"उद्यमी का नाम / Udyami name",
+    phEnterprise:"एंटरप्राइज़ का नाम / Enterprise name",
+    btnAdd:"जोड़ें / Add",
+    noteScale:"लिस्ट 30 या उससे ज़्यादा उद्यमियों तक अपने आप बढ़ जाएगी। / The list grows automatically past 30 as you add more.",
+    lblMonth:"महीना / वर्ष / Month / Year",
+    secEmployees:"कर्मचारी संख्या / Employees",
+    f1:"1. फुल टाइम पुरुष कर्मचारी / Full time male employees",
+    f2:"2. फुल टाइम महिला कर्मचारी / Full time female employees",
+    f3:"3. पार्ट टाइम पुरुष कर्मचारी / Part time male employees",
+    f4:"4. पार्ट टाइम महिला कर्मचारी / Part time female employees",
+    f5:"5. सीजनल पुरुष कर्मचारी (डिमांड बेसिस) / Seasonal male employees (demand basis)",
+    f6:"6. सीजनल महिला कर्मचारी / Seasonal female employees",
+    secSalary:"वेतन / Salary",
+    f7:"7. फुल टाइम कर्मचारियों की कुल सैलरी (मासिक) / Total salary, full time employees (monthly)",
+    f8:"8. पार्ट टाइम कर्मचारियों की कुल सैलरी / Total salary, part time employees",
+    f9:"9. सीजनल कर्मचारियों की कुल सैलरी / Total salary, seasonal employees",
+    secBusiness:"बिज़नेस परफॉरमेंस / Business performance",
+    f10:"10. रेफरेंस / कनेक्ट (एक एंटरप्राइज़ से दूसरे को) / Referral / connect to another enterprise",
+    f12:"12. इस महीने की सेल्स राशि / Sales amount this month",
+    f13:"13. रेवेन्यू ग्रोथ (ऑटो कैलकुलेटेड) / Revenue growth (auto-calculated)",
+    f14:"14. कुल प्रोसेस हुए ऑर्डर / No. of orders processed",
+    f15:"15. नए ग्राहकों की संख्या / No. of new customers",
+    f16:"16. रिपीट ऑर्डर / Repeat Order",
+    secHighlights:"महीने की मुख्य बातें / Key highlights",
+    f11:"11. इस महीने की मुख्य हाइलाइट्स / Key highlights for the month",
+    btnSubmit:"डेटा सबमिट करें / Submit data",
+    dashHeading:"सभी उद्यमियों का डेटा / All udyami data",
+    btnExport:"CSV डाउनलोड करें / Download CSV",
+    dashSub:"टीम यहाँ सभी उद्यमियों का मासिक डेटा देख सकती है, फ़िल्टर कर सकती है और MIS में भर सकती है। / The team can view, filter, and copy this data into the MIS here.",
+    filterMonthLbl:"महीना फ़िल्टर करें / Filter by month",
+    allMonths:"सभी महीने / All months",
+    filterEntLbl:"उद्यमी फ़िल्टर करें / Filter by udyami",
+    allEnt:"सभी उद्यमी / All udyami",
+    btnRefresh:"रिफ्रेश करें / Refresh",
+    loadingTxt:"डेटा लोड हो रहा है... / Loading data...",
+    emptyTxt:"अभी तक कोई डेटा सबमिट नहीं हुआ है। / No data submitted yet.",
+    entPick:"-- चुनें / choose --",
+    entEmpty:"-- पहले नीचे नाम जोड़ें / add a name below first --",
+    thUdyami:"उद्यमी / Udyami", thEnt:"एंटरप्राइज़ / Enterprise", thMonth:"महीना / Month",
+    thFtM:"FT पुरुष / M", thFtF:"FT महिला / F", thPtM:"PT पुरुष / M", thPtF:"PT महिला / F",
+    thSeM:"सीजनल पुरुष / M", thSeF:"सीजनल महिला / F",
+    thSalFt:"FT सैलरी / Salary", thSalPt:"PT सैलरी / Salary", thSalSe:"सीजनल सैलरी / Salary",
+    thRef:"रेफरल / Referral", thHi:"हाइलाइट्स / Highlights", thSales:"सेल्स / Sales",
+    thGrowth:"ग्रोथ / Growth", thOrders:"ऑर्डर / Orders", thNewCust:"नए ग्राहक / New cust.",
+    thRepeat:"रिपीट / Repeat", thDate:"जमा तारीख / Date",
+    errNoEnt:"कृपया पहले उद्यमी / एंटरप्राइज़ चुनें या जोड़ें। / Please select or add an udyami first.",
+    errNoMonth:"कृपया महीना चुनें। / Please select a month.",
+    okMsg:"डेटा सफलतापूर्वक सबमिट हो गया, धन्यवाद! फॉर्म खाली कर दिया गया है और अगले महीने के लिए तैयार है। / Data submitted successfully, thank you! The form has been cleared and is ready for the next month's entry.",
+    errSubmit:"सबमिट करने में समस्या हुई, कृपया दोबारा कोशिश करें। / Something went wrong, please try again.",
+    noExport:"कोई डेटा उपलब्ध नहीं है डाउनलोड करने के लिए। / No data available to export.",
+    pinSubUnlock:"डैशबोर्ड देखने के लिए टीम PIN डालें। / Enter the team PIN to view the dashboard.",
+    pinSubSetup:"अभी तक कोई टीम PIN सेट नहीं है। अभी एक बनाएं — इसे सिर्फ अपनी टीम के साथ शेयर करें। / No team PIN is set yet. Create one now — share it only with your team.",
+    pinEmpty:"कृपया PIN डालें। / Please enter a PIN.",
+    pinShort:"PIN कम से कम 4 अक्षर का होना चाहिए। / PIN should be at least 4 characters.",
+    pinWrong:"गलत PIN, दोबारा कोशिश करें। / Wrong PIN, try again.",
+    removeBtn:"हटाएं / Remove",
+    removeConfirm:"इस उद्यमी को active लिस्ट से हटाएं? इनका पुराना जमा किया डेटा डिलीट नहीं होगा, सिर्फ आगे के महीनों के लिए चुनने वाली लिस्ट से हट जाएगा। / Remove this udyami from the active list? Past data stays safe — only removed from future selection.",
+    removedMsg:"लिस्ट से हटा दिया गया, पुराना डेटा सुरक्षित है। / Removed from the list, past data is preserved.",
+    btnDeleteData:"चुने गए उद्यमी का पूरा डेटा मिटाएं / Delete selected udyami's data",
+    deletePickFirst:"कृपया पहले फ़िल्टर में से कोई एक उद्यमी चुनें। / Please select a specific udyami from the filter first.",
+    deleteConfirm:"इससे इस उद्यमी के सभी महीनों का डेटा हमेशा के लिए मिट जाएगा। यह वापस नहीं होगा। जारी रखें? / This permanently deletes ALL records for this udyami. This cannot be undone. Continue?",
+    deletedMsg:"डेटा मिटा दिया गया। / Data deleted.",
+    pinHeading:"टीम एक्सेस / Team Access"
+  },
+  en: {
+    appTitle:"MSME Incubator — Monthly MIS Data",
+    appSub:"Up to 30 enterprises · monthly data collection",
+    tabSubmit:"Udyami Form",
+    tabDash:"Team Dashboard",
+    formHeading:"Submit your monthly data",
+    formSub:"Select your name and enterprise, pick the month, and fill in the details below.",
+    lblEntity:"Select udyami / enterprise",
+    phUdyami:"Udyami name",
+    phEnterprise:"Enterprise name",
+    btnAdd:"Add",
+    noteScale:"The list grows automatically past 30 as you add more.",
+    lblMonth:"Month / Year",
+    secEmployees:"Employees",
+    f1:"1. Full time male employees",
+    f2:"2. Full time female employees",
+    f3:"3. Part time male employees",
+    f4:"4. Part time female employees",
+    f5:"5. Seasonal male employees (demand basis)",
+    f6:"6. Seasonal female employees",
+    secSalary:"Salary",
+    f7:"7. Total salary, full time employees (monthly)",
+    f8:"8. Total salary, part time employees",
+    f9:"9. Total salary, seasonal employees",
+    secBusiness:"Business performance",
+    f10:"10. Referral / connect to another enterprise",
+    f12:"12. Sales amount this month",
+    f13:"13. Revenue growth (auto-calculated)",
+    f14:"14. No. of orders processed",
+    f15:"15. No. of new customers",
+    f16:"16. Repeat Order",
+    secHighlights:"Key highlights",
+    f11:"11. Key highlights for the month",
+    btnSubmit:"Submit data",
+    dashHeading:"All udyami data",
+    btnExport:"Download CSV",
+    dashSub:"The team can view, filter, and copy this data into the MIS here.",
+    filterMonthLbl:"Filter by month",
+    allMonths:"All months",
+    filterEntLbl:"Filter by udyami",
+    allEnt:"All udyami",
+    btnRefresh:"Refresh",
+    loadingTxt:"Loading data...",
+    emptyTxt:"No data submitted yet.",
+    entPick:"-- choose --",
+    entEmpty:"-- add a name below first --",
+    thUdyami:"Udyami", thEnt:"Enterprise", thMonth:"Month",
+    thFtM:"FT male", thFtF:"FT female", thPtM:"PT male", thPtF:"PT female",
+    thSeM:"Seasonal male", thSeF:"Seasonal female",
+    thSalFt:"FT salary", thSalPt:"PT salary", thSalSe:"Seasonal salary",
+    thRef:"Referral", thHi:"Highlights", thSales:"Sales",
+    thGrowth:"Growth", thOrders:"Orders", thNewCust:"New cust.",
+    thRepeat:"Repeat", thDate:"Submitted",
+    errNoEnt:"Please select or add an udyami first.",
+    errNoMonth:"Please select a month.",
+    okMsg:"Data submitted successfully, thank you! The form has been cleared and is ready for the next month's entry.",
+    errSubmit:"Something went wrong, please try again.",
+    noExport:"No data available to export.",
+    pinSubUnlock:"Enter the team PIN to view the dashboard.",
+    pinSubSetup:"No team PIN is set yet. Create one now — share it only with your team.",
+    pinEmpty:"Please enter a PIN.",
+    pinShort:"PIN should be at least 4 characters.",
+    pinWrong:"Wrong PIN, try again.",
+    removeBtn:"Remove",
+    removeConfirm:"Remove this udyami from the active list? Past data stays safe — only removed from future selection.",
+    removedMsg:"Removed from the list, past data is preserved.",
+    btnDeleteData:"Delete selected udyami's data",
+    deletePickFirst:"Please select a specific udyami from the filter first.",
+    deleteConfirm:"This permanently deletes ALL records for this udyami. This cannot be undone. Continue?",
+    deletedMsg:"Data deleted.",
+    pinHeading:"Team Access"
+  }
+};
+let currentLang = 'bi';
 
-const SCORE_LABELS = ['1 – Poor','2 – Weak','3 – Fair','4 – Good','5 – Strong'];
-const SEL_CLASSES = ['sel-1','sel-2','sel-3','sel-4','sel-5'];
+// ---- Storage layer with safe fallback ----
+// window.storage is only injected when this app is opened through a live
+// Claude artifact/share link. If someone opens the raw downloaded HTML file
+// directly (double-click / file://), that API will not exist. In that case
+// we fall back to an in-memory store so the app still works for testing in
+// THIS browser tab, and we show a clear warning so it isn't confused with
+// real shared saving.
+let storageIsLive = !!(window.storage && typeof window.storage.set === 'function');
+const memoryStore = {};
 
-let assessorEmail = '';
-let assessments = [];
-let step = 0;
-let draft = makeEmptyDraft();
+function showStorageWarning(){
+  const el = document.getElementById('storageWarning');
+  const txt = document.getElementById('storageWarningText');
+  el.style.display = 'flex';
+  txt.textContent = currentLang === 'en'
+    ? 'Note: this preview only saves locally. Publish this artifact and share that link for real shared saving across your team and udyami.'
+    : 'नोट: ये प्रीव्यू सिर्फ लोकल सेव करता है। असली शेयर्ड सेविंग के लिए artifact को Publish करके वो link share करें।';
+}
 
-function makeEmptyDraft() {
-  return {
-    basic: {
-      udyamiName:'', mobile:'', cohort:'', district:'', block:'',
-      businessName:'', businessType:'', runningSince:'',
-      assessmentDate: new Date().toISOString().split('T')[0],
-      assessorNotes:''
-    },
-    scores: {}
+function sleep(ms){ return new Promise(r => setTimeout(r, ms)); }
+
+// Retries a storage call a few times before giving up — the shared storage
+// backend occasionally returns a transient "Internal server error", and a
+// short retry with backoff resolves most of those without bothering the user.
+async function withRetry(fn, attempts, delayMs){
+  attempts = attempts || 3;
+  delayMs = delayMs || 700;
+  let lastErr;
+  for(let i = 0; i < attempts; i++){
+    try{
+      return await fn();
+    }catch(e){
+      lastErr = e;
+      if(i < attempts - 1) await sleep(delayMs * (i + 1));
+    }
+  }
+  throw lastErr;
+}
+
+const Store = {
+  async get(key){
+    if(storageIsLive){
+      return await withRetry(() => window.storage.get(key, true));
+    }
+    return Object.prototype.hasOwnProperty.call(memoryStore, key) ? {key, value: memoryStore[key], shared:true} : null;
+  },
+  async set(key, value){
+    if(storageIsLive){
+      const result = await withRetry(() => window.storage.set(key, value, true));
+      // Read back what we just wrote to confirm it actually landed, since a
+      // "success" response has occasionally been followed by a silent miss.
+      try{
+        const verify = await withRetry(() => window.storage.get(key, true), 2, 500);
+        if(!verify || verify.value !== value){
+          throw new Error('save could not be verified');
+        }
+      }catch(e){
+        throw new Error('save could not be verified: ' + e.message);
+      }
+      return result;
+    }
+    memoryStore[key] = value;
+    return {key, value, shared:true};
+  },
+  async list(prefix){
+    if(storageIsLive){
+      return await withRetry(() => window.storage.list(prefix, true));
+    }
+    const keys = Object.keys(memoryStore).filter(k=>!prefix || k.startsWith(prefix));
+    return {keys, prefix, shared:true};
+  },
+  async delete(key){
+    if(storageIsLive){
+      return await withRetry(() => window.storage.delete(key, true));
+    }
+    const existed = Object.prototype.hasOwnProperty.call(memoryStore, key);
+    delete memoryStore[key];
+    return existed ? {key, deleted:true, shared:true} : null;
+  }
+};
+
+function applyLang(){
+  const dict = T[currentLang];
+  document.querySelectorAll('[data-t]').forEach(el=>{
+    const key = el.getAttribute('data-t');
+    if(dict[key]) el.textContent = dict[key];
+  });
+  document.querySelectorAll('[data-tph]').forEach(el=>{
+    const key = el.getAttribute('data-tph');
+    if(dict[key]) el.placeholder = dict[key];
+  });
+  document.getElementById('langHiBtn').classList.toggle('active', currentLang==='bi');
+  document.getElementById('langEnBtn').classList.toggle('active', currentLang==='en');
+  renderDashHead();
+  if(window._currentRows) renderRows(window._currentRows);
+  populateEntSelects();
+}
+
+function setLang(lang){
+  currentLang = lang;
+  applyLang();
+}
+
+function monthLabel(ym){
+  if(!ym) return '';
+  const [y,m] = ym.split('-');
+  const namesHi = ['जन','फर','मार्च','अप्रैल','मई','जून','जुलाई','अग','सित','अक्ट','नव','दिस'];
+  const namesEn = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const idx = parseInt(m,10)-1;
+  if(currentLang==='en') return namesEn[idx] + ' ' + y;
+  return namesHi[idx] + ' ' + y + ' / ' + namesEn[idx];
+}
+
+async function getEntities(){
+  try{
+    const res = await Store.get('entities');
+    return res ? JSON.parse(res.value) : [];
+  }catch(e){
+    return [];
+  }
+}
+
+async function saveEntities(list){
+  await Store.set('entities', JSON.stringify(list));
+}
+
+function entityKey(e){ return e.udyami + '||' + e.enterprise; }
+function entityLabel(e){ return e.udyami + ' (' + e.enterprise + ')'; }
+
+async function populateEntSelects(){
+  const list = await getEntities();
+  const dict = T[currentLang];
+  const entSelect = document.getElementById('entSelect');
+  const filterEnt = document.getElementById('filterEnt');
+  const prevSel = entSelect.value;
+  const prevFilter = filterEnt.value;
+
+  entSelect.innerHTML = list.length
+    ? list.map(e=>`<option value="${entityKey(e)}">${entityLabel(e)}</option>`).join('')
+    : `<option value="">${dict.entEmpty}</option>`;
+  if(list.some(e=>entityKey(e)===prevSel)) entSelect.value = prevSel;
+
+  filterEnt.innerHTML = `<option value="" data-t="allEnt">${dict.allEnt}</option>` +
+    list.map(e=>`<option value="${entityKey(e)}">${entityLabel(e)}</option>`).join('');
+  if(list.some(e=>entityKey(e)===prevFilter)) filterEnt.value = prevFilter;
+
+  renderEntityManageList(list);
+}
+
+function renderEntityManageList(list){
+  const dict = T[currentLang];
+  const wrap = document.getElementById('entityManageList');
+  if(!list.length){ wrap.innerHTML=''; return; }
+  wrap.innerHTML = list.map(e=>{
+    const k = entityKey(e).replace(/'/g,"\\'").replace(/"/g,'&quot;');
+    return `<div class="ent-row"><span class="name">${entityLabel(e)}</span><button onclick="removeEntity('${k}')">${dict.removeBtn}</button></div>`;
+  }).join('');
+}
+
+async function removeEntity(key){
+  const dict = T[currentLang];
+  if(!confirm(dict.removeConfirm)) return;
+  try{
+    const list = await getEntities();
+    const filtered = list.filter(e=>entityKey(e)!==key);
+    await saveEntities(filtered);
+    await populateEntSelects();
+    showMsg(dict.removedMsg, true);
+  }catch(e){
+    showMsg((currentLang==='en'?'Could not remove: ':'हटाने में समस्या: ')+e.message, false);
+  }
+}
+
+async function addEnterprise(){
+  const udyamiInp = document.getElementById('newUdyamiName');
+  const entInp = document.getElementById('newEntName');
+  const udyami = udyamiInp.value.trim();
+  const enterprise = entInp.value.trim();
+  if(!udyami && !enterprise){
+    showMsg(currentLang==='en' ? 'Please type a name in one of the two boxes above, then click Add.' : 'कृपया ऊपर के दो में से किसी एक बॉक्स में नाम लिखें, फिर Add पर क्लिक करें।', false);
+    return;
+  }
+  try{
+    const list = await getEntities();
+    const finalUdyami = udyami || enterprise;
+    const finalEnt = enterprise || udyami;
+    const key = finalUdyami + '||' + finalEnt;
+    if(!list.some(e=>entityKey(e)===key)){
+      list.push({udyami: finalUdyami, enterprise: finalEnt});
+      await saveEntities(list);
+    }
+    await populateEntSelects();
+    document.getElementById('entSelect').value = key;
+    udyamiInp.value = '';
+    entInp.value = '';
+    showMsg(currentLang==='en' ? ('Added "' + finalUdyami + '" to the list. You can now pick them above and submit data.') : ('"' + finalUdyami + '" लिस्ट में जुड़ गया। अब आप इसे ऊपर चुनकर डेटा सबमिट कर सकते हैं।'), true);
+    if(!storageIsLive) showStorageWarning();
+  }catch(e){
+    showMsg((currentLang==='en' ? 'Could not add name: ' : 'नाम जोड़ने में समस्या: ') + e.message, false);
+  }
+}
+
+let dashAuthenticated = false;
+
+function switchTab(tab){
+  document.getElementById('tabSubmit').style.display = tab==='submit' ? 'block' : 'none';
+  document.getElementById('tabDash').style.display = tab==='dash' ? 'block' : 'none';
+  document.getElementById('tabBtnSubmit').classList.toggle('active', tab==='submit');
+  document.getElementById('tabBtnDash').classList.toggle('active', tab==='dash');
+  if(tab==='dash') openDashboardTab();
+}
+
+async function openDashboardTab(){
+  if(dashAuthenticated){
+    document.getElementById('pinGate').style.display = 'none';
+    document.getElementById('dashContent').style.display = 'block';
+    refreshDashboard();
+    return;
+  }
+  document.getElementById('dashContent').style.display = 'none';
+  document.getElementById('pinGate').style.display = 'block';
+  await renderPinGate();
+}
+
+async function renderPinGate(){
+  const dict = T[currentLang];
+  const pinInput = document.getElementById('pinInput');
+  const pinSub = document.getElementById('pinSub');
+  const pinMsg = document.getElementById('pinMsg');
+  pinInput.value = '';
+  pinMsg.textContent = '';
+  pinMsg.className = 'msg2';
+  let pinRec = null;
+  try{ pinRec = await Store.get('dashboard_pin'); }catch(e){ pinRec = null; }
+  if(pinRec && pinRec.value){
+    window._pinMode = 'unlock';
+    pinSub.textContent = dict.pinSubUnlock;
+  } else {
+    window._pinMode = 'setup';
+    pinSub.textContent = dict.pinSubSetup;
+  }
+  pinInput.focus();
+}
+
+async function handlePinSubmit(){
+  const dict = T[currentLang];
+  const pinInput = document.getElementById('pinInput');
+  const pinMsg = document.getElementById('pinMsg');
+  const val = pinInput.value.trim();
+  if(!val){
+    pinMsg.textContent = dict.pinEmpty; pinMsg.className = 'msg2 err'; return;
+  }
+  if(window._pinMode === 'setup'){
+    if(val.length < 4){
+      pinMsg.textContent = dict.pinShort; pinMsg.className = 'msg2 err'; return;
+    }
+    try{
+      await Store.set('dashboard_pin', val);
+      dashAuthenticated = true;
+      document.getElementById('pinGate').style.display = 'none';
+      document.getElementById('dashContent').style.display = 'block';
+      refreshDashboard();
+    }catch(e){
+      pinMsg.textContent = (currentLang==='en'?'Could not set PIN: ':'PIN सेट करने में समस्या: ')+e.message;
+      pinMsg.className = 'msg2 err';
+    }
+  } else {
+    try{
+      const rec = await Store.get('dashboard_pin');
+      if(rec && rec.value === val){
+        dashAuthenticated = true;
+        document.getElementById('pinGate').style.display = 'none';
+        document.getElementById('dashContent').style.display = 'block';
+        refreshDashboard();
+      } else {
+        pinMsg.textContent = dict.pinWrong; pinMsg.className = 'msg2 err';
+      }
+    }catch(e){
+      pinMsg.textContent = (currentLang==='en'?'Error checking PIN: ':'PIN जांचने में समस्या: ')+e.message;
+      pinMsg.className = 'msg2 err';
+    }
+  }
+}
+
+async function deleteEntityData(){
+  const dict = T[currentLang];
+  const fe = document.getElementById('filterEnt').value;
+  if(!fe){ alert(dict.deletePickFirst); return; }
+  if(!confirm(dict.deleteConfirm)) return;
+  try{
+    const listRes = await Store.list('submission:' + fe + ':');
+    if(listRes && listRes.keys){
+      for(const k of listRes.keys){
+        await Store.delete(k);
+      }
+    }
+    await refreshDashboard();
+    alert(dict.deletedMsg);
+  }catch(e){
+    alert((currentLang==='en'?'Could not delete: ':'मिटाने में समस्या: ')+e.message);
+  }
+}
+
+function showMsg(text, ok){
+  const el = document.getElementById('submitMsg');
+  el.textContent = text;
+  el.className = 'msg ' + (ok ? 'ok' : 'err');
+}
+
+function getPrevMonthStr(ym){
+  if(!ym) return ym;
+  const [y,m] = ym.split('-').map(Number);
+  let py = y, pm = m - 1;
+  if(pm === 0){ pm = 12; py = y - 1; }
+  return py + '-' + String(pm).padStart(2,'0');
+}
+
+function getNextMonthStr(ym){
+  if(!ym) return ym;
+  const [y,m] = ym.split('-').map(Number);
+  let ny = y, nm = m + 1;
+  if(nm === 13){ nm = 1; ny = y + 1; }
+  return ny + '-' + String(nm).padStart(2,'0');
+}
+
+async function computeRevenueGrowth(){
+  const growthField = document.getElementById('f13');
+  const entKey = document.getElementById('entSelect').value;
+  const month = document.getElementById('monthInput').value;
+  const salesVal = document.getElementById('f12').value;
+
+  if(!entKey || !month || salesVal === ''){
+    growthField.value = 'NA';
+    return;
+  }
+  const currentSales = parseFloat(salesVal);
+  if(isNaN(currentSales)){
+    growthField.value = 'NA';
+    return;
+  }
+  const prevMonth = getPrevMonthStr(month);
+  const prevKey = 'submission:' + entKey + ':' + prevMonth;
+  try{
+    const rec = await Store.get(prevKey);
+    if(rec && rec.value){
+      const prevRecord = JSON.parse(rec.value);
+      const prevSales = parseFloat(prevRecord.sales_amount);
+      if(!isNaN(prevSales) && prevSales !== 0){
+        const growth = ((currentSales - prevSales) / prevSales) * 100;
+        const sign = growth > 0 ? '+' : '';
+        growthField.value = sign + growth.toFixed(2) + '%';
+      } else {
+        growthField.value = currentLang === 'en' ? 'N/A (prev. month has no numeric sales)' : 'NA (पिछले महीने का संख्यात्मक सेल्स डेटा नहीं है)';
+      }
+    } else {
+      growthField.value = currentLang === 'en' ? 'N/A (first recorded month)' : 'NA (यह पहला दर्ज महीना है)';
+    }
+  }catch(e){
+    growthField.value = 'NA';
+  }
+}
+
+function resetSubmitForm(){
+  const monthInput = document.getElementById('monthInput');
+  const nextMonth = getNextMonthStr(monthInput.value);
+  monthInput.value = nextMonth;
+  document.getElementById('entSelect').value = '';
+  ['f1','f2','f3','f4','f5','f6','f10'].forEach(id => document.getElementById(id).value = '0');
+  ['f7','f8','f9','f11','f12','f13','f14','f15','f16'].forEach(id => document.getElementById(id).value = '');
+}
+
+async function submitData(){
+  const dict = T[currentLang];
+  const entKey = document.getElementById('entSelect').value;
+  const month = document.getElementById('monthInput').value;
+  if(!entKey){ showMsg(dict.errNoEnt, false); return; }
+  if(!month){ showMsg(dict.errNoMonth, false); return; }
+  const [udyami, enterprise] = entKey.split('||');
+
+  const submitBtn = document.getElementById('submitBtn');
+  submitBtn.disabled = true;
+  submitBtn.style.opacity = '0.6';
+  submitBtn.textContent = currentLang === 'en' ? 'Saving...' : 'सेव हो रहा है...';
+  showMsg(currentLang === 'en' ? 'Saving your data, please wait...' : 'आपका डेटा सेव हो रहा है, कृपया प्रतीक्षा करें...', true);
+
+  await computeRevenueGrowth();
+
+  const record = {
+    udyami: udyami,
+    enterprise: enterprise,
+    month: month,
+    ft_male: document.getElementById('f1').value || '0',
+    ft_female: document.getElementById('f2').value || '0',
+    pt_male: document.getElementById('f3').value || '0',
+    pt_female: document.getElementById('f4').value || '0',
+    seasonal_male: document.getElementById('f5').value || '0',
+    seasonal_female: document.getElementById('f6').value || '0',
+    salary_ft: document.getElementById('f7').value || 'NA',
+    salary_pt: document.getElementById('f8').value || 'NA',
+    salary_seasonal: document.getElementById('f9').value || 'NA',
+    referrals: document.getElementById('f10').value || '0',
+    highlights: document.getElementById('f11').value || '',
+    sales_amount: document.getElementById('f12').value || 'NA',
+    revenue_growth: document.getElementById('f13').value || 'NA',
+    orders_processed: document.getElementById('f14').value || 'NA',
+    new_customers: document.getElementById('f15').value || 'NA',
+    repeat_orders: document.getElementById('f16').value || 'NA',
+    submitted_at: new Date().toISOString()
   };
+
+  const key = 'submission:' + entKey + ':' + month;
+  try{
+    const result = await Store.set(key, JSON.stringify(record));
+    if(result){
+      showMsg(dict.okMsg, true);
+      resetSubmitForm();
+    }else{
+      showMsg(dict.errSubmit, false);
+    }
+  }catch(e){
+    showMsg(dict.errSubmit + ' (' + e.message + ') ' + (currentLang==='en' ? '— your entered data is still in the form, just click Submit again.' : '— आपका भरा डेटा फॉर्म में सुरक्षित है, बस दोबारा सबमिट पर क्लिक करें।'), false);
+  }finally{
+    submitBtn.disabled = false;
+    submitBtn.style.opacity = '1';
+    submitBtn.textContent = dict.btnSubmit;
+  }
 }
 
-function totalScore() {
-  return SECTIONS.reduce((t, s) => t + s.criteria.reduce((a, c) => a + (draft.scores[c.id]||0)*c.weight, 0), 0);
+async function getAllSubmissions(){
+  try{
+    const listRes = await Store.list('submission:');
+    if(!listRes || !listRes.keys || listRes.keys.length===0) return [];
+    const records = [];
+    for(const k of listRes.keys){
+      try{
+        const r = await Store.get(k);
+        if(r) records.push(JSON.parse(r.value));
+      }catch(e){}
+    }
+    return records;
+  }catch(e){
+    return [];
+  }
 }
 
-function sectionScore(sec) {
-  return sec.criteria.reduce((a, c) => a + (draft.scores[c.id]||0)*c.weight, 0);
+function toNum(v){ const n = parseInt(v,10); return isNaN(n) ? 0 : n; }
+
+function renderDashHead(){
+  const dict = T[currentLang];
+  const row = document.getElementById('dashHeadRow');
+  const cols = ['thUdyami','thEnt','thMonth','thFtM','thFtF','thPtM','thPtF','thSeM','thSeF','thSalFt','thSalPt','thSalSe','thRef','thHi','thSales','thGrowth','thOrders','thNewCust','thRepeat','thDate'];
+  row.innerHTML = cols.map(c=>`<th>${dict[c]}</th>`).join('');
 }
 
-function getStatus(pct) {
-  if (pct >= 80) return { label:'High performer', cls:'s-high' };
-  if (pct >= 60) return { label:'On track', cls:'s-good' };
-  if (pct >= 40) return { label:'Needs support', cls:'s-needs' };
-  return { label:'Critical support needed', cls:'s-critical' };
+async function refreshDashboard(){
+  const dict = T[currentLang];
+  document.getElementById('dashLoading').style.display = 'block';
+  document.getElementById('dashTableWrap').style.display = 'none';
+  document.getElementById('dashEmpty').style.display = 'none';
+
+  await populateEntSelects();
+  const all = await getAllSubmissions();
+
+  const months = [...new Set(all.map(r=>r.month))].sort().reverse();
+  const filterMonth = document.getElementById('filterMonth');
+  const curMonthVal = filterMonth.value;
+  filterMonth.innerHTML = `<option value="">${dict.allMonths}</option>` + months.map(m=>`<option value="${m}">${monthLabel(m)}</option>`).join('');
+  filterMonth.value = curMonthVal;
+
+  document.getElementById('dashLoading').style.display = 'none';
+  renderDashHead();
+  renderRows(all);
+
+  filterMonth.onchange = ()=>renderRows(window._allSubs);
+  document.getElementById('filterEnt').onchange = ()=>renderRows(window._allSubs);
+  window._allSubs = all;
 }
 
-function showView(id) {
-  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-  document.getElementById(id+'-view').classList.add('active');
-  window.scrollTo(0, 0);
-}
+function renderRows(all){
+  const fm = document.getElementById('filterMonth').value;
+  const fe = document.getElementById('filterEnt').value;
+  let rows = all.filter(r => (!fm || r.month===fm) && (!fe || (r.udyami+'||'+r.enterprise)===fe));
+  rows.sort((a,b)=> b.month.localeCompare(a.month) || a.udyami.localeCompare(b.udyami));
 
-// ---- LOGIN ----
-document.getElementById('login-btn').onclick = doLogin;
-document.getElementById('email-input').onkeydown = e => { if (e.key === 'Enter') doLogin(); };
+  const statGrid = document.getElementById('statGrid');
+  const totalFT = rows.reduce((s,r)=>s+toNum(r.ft_male)+toNum(r.ft_female),0);
+  const totalPT = rows.reduce((s,r)=>s+toNum(r.pt_male)+toNum(r.pt_female),0);
+  const totalSeasonal = rows.reduce((s,r)=>s+toNum(r.seasonal_male)+toNum(r.seasonal_female),0);
+  const reporting = new Set(rows.map(r=>r.udyami+'||'+r.enterprise)).size;
+  const isEn = currentLang==='en';
+  statGrid.innerHTML = `
+    <div class="stat"><div class="num">${rows.length}</div><div class="lbl">${isEn?'Submissions':'सबमिशन / Submissions'}</div></div>
+    <div class="stat"><div class="num">${reporting}</div><div class="lbl">${isEn?'Udyami reporting':'रिपोर्टिंग उद्यमी / Reporting'}</div></div>
+    <div class="stat"><div class="num">${totalFT}</div><div class="lbl">${isEn?'Total full time staff':'कुल FT कर्मचारी / Full time'}</div></div>
+    <div class="stat"><div class="num">${totalPT}</div><div class="lbl">${isEn?'Total part time staff':'कुल PT कर्मचारी / Part time'}</div></div>
+    <div class="stat"><div class="num">${totalSeasonal}</div><div class="lbl">${isEn?'Total seasonal staff':'कुल सीजनल कर्मचारी / Seasonal'}</div></div>
+  `;
 
-function doLogin() {
-  const val = document.getElementById('email-input').value.trim();
-  const err = document.getElementById('login-err');
-  if (!val || !val.includes('@') || !val.includes('.')) {
-    err.style.display = '';
+  const tbody = document.getElementById('dashTableBody');
+  if(rows.length===0){
+    document.getElementById('dashTableWrap').style.display = 'none';
+    document.getElementById('dashEmpty').style.display = 'block';
+    window._currentRows = [];
     return;
   }
-  err.style.display = 'none';
-  assessorEmail = val;
-  showView('dashboard');
-  renderDashboard();
+  document.getElementById('dashTableWrap').style.display = 'block';
+  document.getElementById('dashEmpty').style.display = 'none';
+
+  tbody.innerHTML = rows.map(r => `
+    <tr>
+      <td>${r.udyami}</td>
+      <td>${r.enterprise}</td>
+      <td>${monthLabel(r.month)}</td>
+      <td>${r.ft_male}</td><td>${r.ft_female}</td>
+      <td>${r.pt_male}</td><td>${r.pt_female}</td>
+      <td>${r.seasonal_male}</td><td>${r.seasonal_female}</td>
+      <td>${r.salary_ft}</td><td>${r.salary_pt}</td><td>${r.salary_seasonal}</td>
+      <td>${r.referrals}</td>
+      <td title="${r.highlights}">${(r.highlights||'').slice(0,30)}${(r.highlights||'').length>30?'…':''}</td>
+      <td>${r.sales_amount}</td><td>${r.revenue_growth}</td>
+      <td>${r.orders_processed}</td><td>${r.new_customers}</td><td>${r.repeat_orders}</td>
+      <td>${r.submitted_at ? new Date(r.submitted_at).toLocaleDateString('en-IN') : ''}</td>
+    </tr>
+  `).join('');
+
+  window._currentRows = rows;
 }
 
-// ---- LOGOUT ----
-document.getElementById('logout-btn').onclick = () => {
-  if (!confirm('Exit the portal?')) return;
-  assessorEmail = '';
-  document.getElementById('email-input').value = '';
-  showView('login');
-};
-
-// ---- DASHBOARD ----
-document.getElementById('new-btn').onclick = startNew;
-document.getElementById('export-btn').onclick = exportCSV;
-
-function renderDashboard() {
-  document.getElementById('dash-user-label').textContent = assessorEmail;
-  document.getElementById('export-btn').disabled = assessments.length === 0;
-
-  const el = document.getElementById('dash-main');
-  if (!assessments.length) {
-    el.innerHTML = `
-      <div class="assessments-table" style="text-align:center;padding:56px 24px;">
-        <div style="font-size:48px;color:#ccc;margin-bottom:14px;"><i class="ti ti-clipboard-list"></i></div>
-        <div style="font-size:16px;font-weight:600;margin-bottom:6px;">No assessments yet</div>
-        <div style="font-size:13px;color:var(--text-2);margin-bottom:22px;">Start your first Udyami assessment to see results here.</div>
-        <button class="btn btn-primary" onclick="startNew()"><i class="ti ti-plus"></i> Start first assessment</button>
-      </div>`;
-    return;
-  }
-
-  el.innerHTML = `
-    <div class="dash-header">
-      <div>
-        <div class="dash-title">${assessments.length} assessment${assessments.length>1?'s':''} recorded</div>
-        <div class="dash-meta">Logged in as ${assessorEmail}</div>
-      </div>
-    </div>
-    <div class="assessments-table">
-      <table>
-        <thead><tr>
-          <th>Udyami &amp; Business</th>
-          <th>District</th>
-          <th>Date</th>
-          <th>Score</th>
-          <th>Status</th>
-        </tr></thead>
-        <tbody>
-          ${assessments.map(a => {
-            const st = getStatus(a.pct);
-            return `<tr>
-              <td>
-                <div style="font-weight:600;">${a.udyamiName||'—'}</div>
-                <div style="font-size:12px;color:var(--text-2);">${a.businessName||'—'}</div>
-              </td>
-              <td style="color:var(--text-2);">${a.district||'—'}</td>
-              <td style="color:var(--text-2);">${a.date}</td>
-              <td>
-                <span style="font-weight:700;">${a.total}</span>
-                <span style="color:var(--text-2);">/160</span>
-                <span style="font-size:11px;color:var(--text-2);"> (${a.pct}%)</span>
-              </td>
-              <td><span class="status-pill ${st.cls}">${st.label}</span></td>
-            </tr>`;
-          }).join('')}
-        </tbody>
-      </table>
-    </div>`;
-}
-
-// ---- NEW ASSESSMENT ----
-function startNew() {
-  draft = makeEmptyDraft();
-  step = 0;
-  showView('form');
-  renderFormStep();
-}
-
-// ---- FORM STEPS ----
-document.getElementById('cancel-btn').onclick = () => {
-  if (confirm('Unsaved progress will be lost. Cancel?')) {
-    showView('dashboard');
-    renderDashboard();
-  }
-};
-
-document.getElementById('back-btn').onclick = () => {
-  if (step > 0) { step--; renderFormStep(); }
-};
-
-document.getElementById('next-btn').onclick = () => {
-  if (step === 0) {
-    if (!draft.basic.udyamiName.trim()) { alert('Please enter the Udyami name.'); return; }
-    if (!draft.basic.businessName.trim()) { alert('Please enter the business name.'); return; }
-  }
-  const total = SECTIONS.length + 1;
-  if (step < total - 1) {
-    step++;
-    renderFormStep();
-  } else {
-    showView('result');
-    renderResults();
-  }
-};
-
-function renderFormStep() {
-  const total = SECTIONS.length + 1;
-  document.getElementById('form-name-label').textContent =
-    draft.basic.udyamiName ? `Evaluating: ${draft.basic.udyamiName}` : 'New assessment';
-  document.getElementById('live-score').textContent = `Score: ${totalScore()} / 160`;
-
-  const pb = document.getElementById('progress-bar');
-  pb.innerHTML = Array.from({length:total}, (_,i) =>
-    `<div class="progress-seg ${i < step ? 'filled' : i === step ? 'active' : ''}"></div>`
-  ).join('');
-
-  document.getElementById('back-btn').disabled = step === 0;
-  document.getElementById('step-counter').textContent =
-    step === 0 ? 'Step 1 of 8 — Basic info' : `Step ${step+1} of 8 — ${SECTIONS[step-1].title}`;
-
-  const nb = document.getElementById('next-btn');
-  if (step === total - 1) {
-    nb.innerHTML = '<i class="ti ti-chart-bar"></i> View results';
-    nb.className = 'btn btn-success';
-  } else {
-    nb.innerHTML = 'Next <i class="ti ti-arrow-right"></i>';
-    nb.className = 'btn btn-primary';
-  }
-
-  step === 0 ? renderBasicStep() : renderSectionStep(step - 1);
-  window.scrollTo(0, 0);
-}
-
-function renderBasicStep() {
-  const b = draft.basic;
-  document.getElementById('form-main').innerHTML = `
-    <div class="card">
-      <div class="section-header">
-        <div class="section-icon"><i class="ti ti-user"></i></div>
-        <div>
-          <div class="section-title">Udyami details</div>
-          <div class="section-meta">Assessor: ${assessorEmail}</div>
-        </div>
-      </div>
-      <div class="form-grid">
-        <div class="form-group">
-          <label class="form-label">Udyami name <span class="req">*</span></label>
-          <input class="form-input" id="f-udyamiName" type="text" placeholder="Full name" value="${esc(b.udyamiName)}" />
-        </div>
-        <div class="form-group">
-          <label class="form-label">Mobile number</label>
-          <input class="form-input" id="f-mobile" type="tel" placeholder="10-digit number" value="${esc(b.mobile)}" />
-        </div>
-        <div class="form-group">
-          <label class="form-label">Business name <span class="req">*</span></label>
-          <input class="form-input" id="f-businessName" type="text" placeholder="Business or brand name" value="${esc(b.businessName)}" />
-        </div>
-        <div class="form-group">
-          <label class="form-label">Business type / sector</label>
-          <input class="form-input" id="f-businessType" type="text" placeholder="e.g. Tailoring, Food processing" value="${esc(b.businessType)}" />
-        </div>
-        <div class="form-group">
-          <label class="form-label">Cohort / batch</label>
-          <input class="form-input" id="f-cohort" type="text" placeholder="e.g. Cohort 7" value="${esc(b.cohort)}" />
-        </div>
-        <div class="form-group">
-          <label class="form-label">District</label>
-          <input class="form-input" id="f-district" type="text" placeholder="District name" value="${esc(b.district)}" />
-        </div>
-        <div class="form-group">
-          <label class="form-label">Block / village</label>
-          <input class="form-input" id="f-block" type="text" placeholder="Block or village" value="${esc(b.block)}" />
-        </div>
-        <div class="form-group">
-          <label class="form-label">Running since</label>
-          <input class="form-input" id="f-runningSince" type="text" placeholder="e.g. March 2021" value="${esc(b.runningSince)}" />
-        </div>
-        <div class="form-group">
-          <label class="form-label">Assessment date</label>
-          <input class="form-input" id="f-assessmentDate" type="date" value="${esc(b.assessmentDate)}" />
-        </div>
-        <div class="form-group full">
-          <label class="form-label">Assessor notes</label>
-          <textarea class="form-input" id="f-assessorNotes" rows="3" placeholder="Any additional observations...">${esc(b.assessorNotes)}</textarea>
-        </div>
-      </div>
-    </div>`;
-
-  ['udyamiName','mobile','businessName','businessType','cohort','district','block','runningSince','assessmentDate','assessorNotes'].forEach(f => {
-    const el = document.getElementById('f-'+f);
-    if (!el) return;
-    el.addEventListener('input', () => {
-      draft.basic[f] = el.value;
-      if (f === 'udyamiName') document.getElementById('form-name-label').textContent =
-        el.value ? `Evaluating: ${el.value}` : 'New assessment';
-    });
+function exportCSV(){
+  const dict = T[currentLang];
+  const rows = window._currentRows || [];
+  if(rows.length===0){ alert(dict.noExport); return; }
+  const headers = ['udyami','enterprise','month','ft_male','ft_female','pt_male','pt_female','seasonal_male','seasonal_female','salary_ft','salary_pt','salary_seasonal','referrals','highlights','sales_amount','revenue_growth','orders_processed','new_customers','repeat_orders','submitted_at'];
+  const csvRows = [headers.join(',')];
+  rows.forEach(r=>{
+    csvRows.push(headers.map(h=>{
+      let v = (r[h] ?? '').toString().replace(/"/g,'""');
+      if(v.includes(',') || v.includes('"') || v.includes('\n')) v = `"${v}"`;
+      return v;
+    }).join(','));
   });
-}
-
-function renderSectionStep(si) {
-  const sec = SECTIONS[si];
-  const answered = sec.criteria.filter(c => draft.scores[c.id]).length;
-  document.getElementById('form-main').innerHTML = `
-    <div class="card">
-      <div class="section-header">
-        <div class="section-icon"><i class="ti ${sec.icon}"></i></div>
-        <div>
-          <div class="section-title">${sec.title}</div>
-          <div class="section-meta">${answered} / ${sec.criteria.length} answered &nbsp;·&nbsp; Max: ${sec.maxScore} pts</div>
-        </div>
-      </div>
-      ${sec.criteria.map((c, ci) => `
-        <div class="criterion-card ${draft.scores[c.id] ? 'answered' : ''}" id="cc-${c.id}">
-          <div class="criterion-title">
-            ${ci+1}. ${c.name}
-            ${c.isMustHave ? '<span class="must-badge">★ 2× weight</span>' : ''}
-          </div>
-          <div class="options-grid">
-            ${c.options.map((opt, oi) => {
-              const sel = draft.scores[c.id] === oi+1 ? SEL_CLASSES[oi] : '';
-              return `<button class="option-btn ${sel}" onclick="pick('${c.id}',${oi+1},${si})">
-                <span class="option-score-lbl">${SCORE_LABELS[oi]}</span>
-                <span class="option-text">${opt}</span>
-              </button>`;
-            }).join('')}
-          </div>
-        </div>
-      `).join('')}
-    </div>`;
-}
-
-window.pick = function(critId, val, si) {
-  draft.scores[critId] = val;
-  document.getElementById('live-score').textContent = `Score: ${totalScore()} / 160`;
-
-  const grid = document.querySelector(`#cc-${critId} .options-grid`);
-  if (grid) grid.querySelectorAll('.option-btn').forEach((btn, i) => {
-    btn.className = 'option-btn' + (i === val-1 ? ' '+SEL_CLASSES[i] : '');
-  });
-
-  const cc = document.getElementById('cc-'+critId);
-  if (cc) cc.classList.add('answered');
-
-  const sec = SECTIONS[si];
-  const answered = sec.criteria.filter(c => draft.scores[c.id]).length;
-  const meta = document.querySelector('.section-meta');
-  if (meta) meta.textContent = `${answered} / ${sec.criteria.length} answered · Max: ${sec.maxScore} pts`;
-};
-
-// ---- RESULTS ----
-document.getElementById('result-back-btn').onclick = () => { showView('form'); renderFormStep(); };
-
-document.getElementById('save-btn').onclick = () => {
-  const tot = totalScore();
-  const pct = Math.round((tot/160)*100);
-  assessments.unshift({
-    udyamiName: draft.basic.udyamiName,
-    businessName: draft.basic.businessName,
-    district: draft.basic.district,
-    date: draft.basic.assessmentDate,
-    total: tot, pct,
-    scores: {...draft.scores}
-  });
-  showView('dashboard');
-  renderDashboard();
-};
-
-function renderResults() {
-  const tot = totalScore();
-  const pct = Math.round((tot/160)*100);
-  const st = getStatus(pct);
-  const allAnswered = SECTIONS.every(s => s.criteria.every(c => draft.scores[c.id]));
-
-  document.getElementById('result-main').innerHTML = `
-    <div class="card">
-      <div class="section-header">
-        <div class="section-icon"><i class="ti ti-chart-bar"></i></div>
-        <div>
-          <div class="section-title">${draft.basic.udyamiName || 'Udyami'} — scorecard</div>
-          <div class="section-meta">${draft.basic.businessName || ''} &nbsp;·&nbsp; ${draft.basic.assessmentDate}</div>
-        </div>
-      </div>
-      ${!allAnswered ? `<div style="background:#FFF8E1;border:0.5px solid #FFD54F;border-radius:var(--radius);padding:10px 14px;font-size:13px;color:#F57F17;margin-bottom:16px;">
-        <i class="ti ti-alert-triangle"></i> Some questions were skipped — they count as 0.
-      </div>` : ''}
-      <div class="results-grid">
-        <div class="result-metric">
-          <div class="result-metric-label">Total score</div>
-          <div class="result-metric-val">${tot}<span style="font-size:16px;color:var(--text-2);">/160</span></div>
-        </div>
-        <div class="result-metric">
-          <div class="result-metric-label">Overall %</div>
-          <div class="result-metric-val">${pct}%</div>
-        </div>
-      </div>
-      <div style="margin-bottom:20px;">
-        <span class="status-pill ${st.cls}" style="font-size:13px;padding:5px 16px;">${st.label}</span>
-      </div>
-      <div>
-        ${SECTIONS.map(sec => {
-          const sc = sectionScore(sec);
-          const sp = Math.round((sc/sec.maxScore)*100);
-          return `<div class="section-result-row">
-            <div class="section-result-name">${sec.title}</div>
-            <div class="mini-bar-bg"><div class="mini-bar-fill" style="width:${sp}%"></div></div>
-            <div class="section-result-score">${sc}/${sec.maxScore}</div>
-          </div>`;
-        }).join('')}
-      </div>
-    </div>`;
-}
-
-// ---- CSV EXPORT ----
-function exportCSV() {
-  if (!assessments.length) return;
-  const heads = ['Udyami name','Business name','District','Date','Total score','Percentage','Status',
-    ...SECTIONS.flatMap(s => s.criteria.map(c => `[${s.title}] ${c.name}`))];
-  const rows = assessments.map(a => {
-    const st = getStatus(a.pct);
-    const base = [`"${a.udyamiName}"`,`"${a.businessName}"`,`"${a.district}"`,a.date,a.total,a.pct,st.label];
-    const sc = SECTIONS.flatMap(s => s.criteria.map(c => a.scores[c.id]||0));
-    return [...base,...sc].join(',');
-  });
-  const csv = [heads.join(','),...rows].join('\n');
-  const blob = new Blob([csv], {type:'text/csv'});
+  const blob = new Blob([csvRows.join('\n')], {type:'text/csv'});
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
-  a.href = url; a.download = `Jagriti_Assessments_${new Date().toISOString().split('T')[0]}.csv`;
-  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  a.href = url;
+  a.download = 'incubator_mis_export.csv';
+  a.click();
+  URL.revokeObjectURL(url);
 }
 
-function esc(s) { return (s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+(async function init(){
+  applyLang();
+  if(!storageIsLive) showStorageWarning();
+  try{
+    await populateEntSelects();
+  }catch(e){
+    showMsg((currentLang==='en' ? 'Startup error: ' : 'शुरू होने में समस्या: ') + e.message, false);
+  }
+})();
 </script>
 </body>
 </html>
